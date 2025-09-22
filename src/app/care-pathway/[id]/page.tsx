@@ -1,17 +1,19 @@
-
-// /electronic-patient-record-platform/src/app/care-pathway/[id]/page.tsx
+// src/app/care-pathway/[id]/page.tsx
 
 import React from 'react';
 import { useRouter } from 'next/router';
 import styles from './page.module.css';
 import { useCarePathway } from '../../hooks/useCarePathway';
+import { CarePathway } from '../../types/carePathway.types';
 
 export const CarePathwayDetailsPage: React.FC = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { pathways } = useCarePathway();
+  const { carePathways } = useCarePathway();
 
-  const pathway = pathways.find((p) => p.id === id);
+  const pathway: CarePathway | undefined = carePathways.find(
+    (p: CarePathway) => p.id === id
+  );
 
   if (!pathway) return <p>Care pathway not found.</p>;
 

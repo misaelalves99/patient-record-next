@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/contexts/CarePathwayContext.tsx
+// src/contexts/CarePathwayContext.tsx
 
 import { createContext } from "react";
 import { CarePathway } from "../types/carePathway.types";
@@ -9,6 +9,7 @@ export interface CarePathwayContextType {
   updateCarePathway: (cp: CarePathway) => void;
   removeCarePathway: (id: string) => void;
 }
+
 export const CarePathwayContext = createContext<CarePathwayContextType>({
   carePathways: [],
   addCarePathway: () => {},

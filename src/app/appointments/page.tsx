@@ -12,6 +12,7 @@ export const AppointmentsPage: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,21 +35,37 @@ export const AppointmentsPage: React.FC = () => {
     return patient ? `${patient.firstName} ${patient.lastName}` : "Desconhecido";
   };
 
-  if (loading) return <p>Carregando agendamentos...</p>;
+  if (loading) return <p className={styles.message}>Carregando agendamentos...</p>;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Agendamentos</h1>
+
       {appointments.length === 0 ? (
-        <p>Nenhum agendamento encontrado.</p>
+        <p className={styles.message}>Nenhum agendamento encontrado.</p>
       ) : (
         <ul className={styles.list}>
           {appointments.map((appt) => (
-            <li key={appt.id} className={styles.item}>
-              {getPatientName(appt.patientId)} - {new Date(appt.date).toLocaleString()}
+            <li
+              key={appt.id}
+              className={styles.item}
+              onClick={() => setSelectedAppointment(appt)}
+            >
+              <span className={styles.patient}>{getPatientName(appt.patientId)}</span>
+              <span className={styles.date}>{new Date(appt.date).toLocaleString()}</span>
             </li>
           ))}
         </ul>
+      )}
+
+      {selectedAppointment && (
+        <div className={styles.card}>
+          <h2>Detalhes do Agendamento</h2>
+          <p><strong>Paciente:</strong> {getPatientName(selectedAppointment.patientId)}</p>
+          <p><strong>Data:</strong> {new Date(selectedAppointment.date).toLocaleString()}</p>
+          {selectedAppointment.notes && <p><strong>Anotações:</strong> {selectedAppointment.notes}</p>}
+          <p><strong>Status:</strong> {selectedAppointment.status}</p>
+        </div>
       )}
     </div>
   );

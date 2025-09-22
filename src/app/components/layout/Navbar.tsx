@@ -7,14 +7,14 @@ import styles from "./Navbar.module.css";
 export const Navbar: React.FC = () => {
   return (
     <nav className={styles.navbar}>
-      <div className={styles.logo}>Electronic Patient Record</div>
+      <div className={styles.logo}>Prontuário Eletrônico</div>
       <ul className={styles.navList}>
-        <li><Link href="/">Home</Link></li>
-        <li><Link href="/patients">Patients</Link></li>
-        <li><Link href="/appointments">Appointments</Link></li>
-        <li><Link href="/care-pathway">Care Pathways</Link></li>
-        <li><Link href="/auth/login">Login</Link></li>
-        <li><Link href="/auth/register">Register</Link></li>
+        <li><Link href="/">Início</Link></li>
+        <li><Link href="/patients">Pacientes</Link></li>
+        <li><Link href="/appointments">Agendamentos</Link></li>
+        <li><Link href="/care-pathway">Caminhos de Cuidado</Link></li>
+        <li><Link href="/auth/login">Entrar</Link></li>
+        <li><Link href="/auth/register">Registrar</Link></li>
       </ul>
     </nav>
   );

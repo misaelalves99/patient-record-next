@@ -41,15 +41,18 @@ export const AppointmentDetailsPage: React.FC = () => {
     return patient ? `${patient.firstName} ${patient.lastName}` : "Desconhecido";
   };
 
-  if (loading) return <p>Carregando detalhes do agendamento...</p>;
-  if (!appointment) return <p>Agendamento não encontrado.</p>;
+  if (loading) return <p className={styles.message}>Carregando detalhes do agendamento...</p>;
+  if (!appointment) return <p className={styles.message}>Agendamento não encontrado.</p>;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Detalhes do Agendamento</h1>
-      <p>Paciente: {getPatientName(appointment.patientId)}</p>
-      <p>Data: {new Date(appointment.date).toLocaleString()}</p>
-      {appointment.notes && <p>Anotações: {appointment.notes}</p>}
+      <div className={styles.card}>
+        <p><strong>Paciente:</strong> {getPatientName(appointment.patientId)}</p>
+        <p><strong>Data:</strong> {new Date(appointment.date).toLocaleString()}</p>
+        {appointment.notes && <p><strong>Anotações:</strong> {appointment.notes}</p>}
+        <p><strong>Status:</strong> {appointment.status}</p>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/components/ui/index.tsx
+// src/components/ui/index.tsx
 
 import React from "react";
 import styles from "./ui.module.css";

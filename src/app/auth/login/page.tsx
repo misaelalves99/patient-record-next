@@ -15,11 +15,11 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       await login({ email, password });
-      alert('Login successful!');
+      alert('Login realizado com sucesso!');
       setEmail('');
       setPassword('');
     } catch (error) {
-      alert('Login failed.');
+      alert('Falha no login.');
     }
   };
 
@@ -34,20 +34,22 @@ export const LoginPage: React.FC = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Digite seu email"
             required
           />
         </label>
         <label className={styles.label}>
-          Password
+          Senha
           <input
             className={styles.input}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Digite sua senha"
             required
           />
         </label>
-        <button className={styles.button} type="submit">Login</button>
+        <button className={styles.button} type="submit">Entrar</button>
       </form>
     </div>
   );

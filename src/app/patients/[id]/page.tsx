@@ -32,18 +32,20 @@ export const PatientDetailsPage: React.FC = () => {
     fetchPatient();
   }, [id]);
 
-  if (loading) return <p>Carregando paciente...</p>;
-  if (!patient) return <p>Paciente não encontrado.</p>;
+  if (loading) return <p className={styles.message}>Carregando paciente...</p>;
+  if (!patient) return <p className={styles.message}>Paciente não encontrado.</p>;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>
         {patient.firstName} {patient.lastName}
       </h1>
-      <p>Email: {patient.email}</p>
-      {patient.phone && <p>Telefone: {patient.phone}</p>}
-      {patient.dateOfBirth && <p>Data de nascimento: {patient.dateOfBirth}</p>}
-      {patient.gender && <p>Gênero: {patient.gender}</p>}
+      <div className={styles.card}>
+        <p><strong>Email:</strong> {patient.email}</p>
+        {patient.phone && <p><strong>Telefone:</strong> {patient.phone}</p>}
+        {patient.dateOfBirth && <p><strong>Data de nascimento:</strong> {patient.dateOfBirth}</p>}
+        {patient.gender && <p><strong>Gênero:</strong> {patient.gender}</p>}
+      </div>
     </div>
   );
 };

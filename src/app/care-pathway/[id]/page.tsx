@@ -32,16 +32,18 @@ export const CarePathwayDetailsPage: React.FC = () => {
     fetchPathway();
   }, [id]);
 
-  if (loading) return <p>Carregando caminho de cuidado...</p>;
-  if (!pathway) return <p>Caminho de cuidado não encontrado.</p>;
+  if (loading) return <p className={styles.message}>Carregando caminho de cuidado...</p>;
+  if (!pathway) return <p className={styles.message}>Caminho de cuidado não encontrado.</p>;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>{pathway.name}</h1>
-      {pathway.description && <p>{pathway.description}</p>}
-      <p>Tipo: {pathway.type}</p>
-      <p>Início: {new Date(pathway.startDate).toLocaleDateString()}</p>
-      {pathway.endDate && <p>Fim: {new Date(pathway.endDate).toLocaleDateString()}</p>}
+      <div className={styles.card}>
+        {pathway.description && <p><strong>Descrição:</strong> {pathway.description}</p>}
+        <p><strong>Tipo:</strong> {pathway.type}</p>
+        <p><strong>Início:</strong> {new Date(pathway.startDate).toLocaleDateString()}</p>
+        {pathway.endDate && <p><strong>Fim:</strong> {new Date(pathway.endDate).toLocaleDateString()}</p>}
+      </div>
     </div>
   );
 };

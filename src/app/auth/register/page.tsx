@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/app/auth/register/page.tsx
+// src/app/auth/register/page.tsx
 
 "use client";
 
@@ -18,38 +18,40 @@ export const RegisterPage: React.FC = () => {
     e.preventDefault();
     try {
       await register({ firstName, lastName, email, password, role });
-      alert('User registered successfully!');
+      alert('Usuário registrado com sucesso!');
       setFirstName('');
       setLastName('');
       setEmail('');
       setPassword('');
       setRole('patient');
     } catch (error) {
-      alert('Registration failed.');
+      alert('Falha no registro.');
     }
   };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Register</h1>
+      <h1 className={styles.title}>Registrar Usuário</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <label className={styles.label}>
-          First Name
+          Nome
           <input
             className={styles.input}
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
+            placeholder="Digite seu nome"
             required
           />
         </label>
         <label className={styles.label}>
-          Last Name
+          Sobrenome
           <input
             className={styles.input}
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
+            placeholder="Digite seu sobrenome"
             required
           />
         </label>
@@ -60,33 +62,35 @@ export const RegisterPage: React.FC = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Digite seu email"
             required
           />
         </label>
         <label className={styles.label}>
-          Password
+          Senha
           <input
             className={styles.input}
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Digite sua senha"
             required
           />
         </label>
         <label className={styles.label}>
-          Role
+          Função
           <select
             className={styles.input}
             value={role}
             onChange={(e) => setRole(e.target.value as any)}
           >
-            <option value="admin">Admin</option>
-            <option value="doctor">Doctor</option>
-            <option value="nurse">Nurse</option>
-            <option value="patient">Patient</option>
+            <option value="admin">Administrador</option>
+            <option value="doctor">Médico</option>
+            <option value="nurse">Enfermeiro(a)</option>
+            <option value="patient">Paciente</option>
           </select>
         </label>
-        <button className={styles.button} type="submit">Register</button>
+        <button className={styles.button} type="submit">Registrar</button>
       </form>
     </div>
   );

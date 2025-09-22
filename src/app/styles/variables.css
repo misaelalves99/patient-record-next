@@ -1,0 +1,9 @@
+/* /electronic-patient-record-platform/src/styles/variables.css */
+
+:root {
+  --primary-color: #0070f3;
+  --secondary-color: #005bb5;
+  --bg-color: #f9f9f9;
+  --text-color: #333;
+  --border-radius: 6px;
+}

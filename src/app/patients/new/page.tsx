@@ -1,18 +1,23 @@
 // src/app/patients/new/page.tsx
 
+"use client";
+
 import React, { useState } from "react";
 import styles from "./page.module.css";
-import { usePatient } from "../../hooks/usePatient";
 import { Patient } from "../../types/patient.types";
 import { v4 as uuidv4 } from "uuid";
+import { post } from "../../lib/api";
 
 export const NewPatientPage: React.FC = () => {
-  const { addPatient } = usePatient();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+
     const newPatient: Patient = {
       id: uuidv4(),
       firstName,
@@ -21,18 +26,27 @@ export const NewPatientPage: React.FC = () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    addPatient(newPatient);
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    alert("Patient created!");
+
+    try {
+      await post<Patient>("/patients", newPatient);
+      alert("Paciente criado com sucesso!");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+    } catch (error) {
+      console.error("Erro ao criar paciente:", error);
+      alert("Falha ao criar paciente.");
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>New Patient</h1>
+      <h1 className={styles.title}>Novo Paciente</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
         <label className={styles.label}>
-          First Name
+          Nome
           <input
             className={styles.input}
             type="text"
@@ -42,7 +56,7 @@ export const NewPatientPage: React.FC = () => {
           />
         </label>
         <label className={styles.label}>
-          Last Name
+          Sobrenome
           <input
             className={styles.input}
             type="text"
@@ -61,11 +75,12 @@ export const NewPatientPage: React.FC = () => {
             required
           />
         </label>
-        <button type="submit" className={styles.button}>
-          Create Patient
+        <button type="submit" className={styles.button} disabled={loading}>
+          {loading ? "Criando..." : "Criar Paciente"}
         </button>
       </form>
     </div>
   );
 };
+
 export default NewPatientPage;

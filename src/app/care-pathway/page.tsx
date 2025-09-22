@@ -2,22 +2,39 @@
 
 "use client";
 
-import React from 'react';
-import styles from './page.module.css';
-import { useCarePathway } from '../hooks/useCarePathway';
-import { CarePathway } from '../types/carePathway.types';
+import React, { useEffect, useState } from "react";
+import styles from "./page.module.css";
+import { CarePathway } from "../types/carePathway.types";
+import { get } from "../lib/api";
 
 export const CarePathwayPage: React.FC = () => {
-  const { carePathways } = useCarePathway();
+  const [carePathways, setCarePathways] = useState<CarePathway[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCarePathways = async () => {
+      try {
+        const data = await get<CarePathway[]>("/care-pathways");
+        setCarePathways(data);
+      } catch (error) {
+        console.error("Erro ao carregar care pathways:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCarePathways();
+  }, []);
+
+  if (loading) return <p>Carregando caminhos de cuidado...</p>;
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Care Pathways</h1>
+      <h1 className={styles.title}>Caminhos de Cuidado</h1>
       {carePathways.length === 0 ? (
-        <p>No care pathways found.</p>
+        <p>Nenhum caminho de cuidado encontrado.</p>
       ) : (
         <ul className={styles.list}>
-          {carePathways.map((pathway: CarePathway) => (
+          {carePathways.map((pathway) => (
             <li key={pathway.id} className={styles.item}>
               {pathway.name}
             </li>

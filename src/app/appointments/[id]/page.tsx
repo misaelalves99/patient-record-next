@@ -1,5 +1,7 @@
 // src/app/appointments/[id]/page.tsx
 
+"use client";
+
 import React from 'react';
 import { useRouter } from 'next/router';
 import styles from './page.module.css';

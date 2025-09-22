@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/lib/validators.ts
+// src/lib/validators.ts
 
 export const isEmailValid = (email: string) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

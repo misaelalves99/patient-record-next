@@ -1,5 +1,7 @@
 // src/contexts/CarePathwayProvider.tsx
 
+"use client";
+
 import React, { useState, ReactNode } from "react";
 import { CarePathwayContext } from "./CarePathwayContext";
 import { CarePathway } from "../types/carePathway.types";

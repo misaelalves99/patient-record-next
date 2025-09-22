@@ -1,5 +1,7 @@
 // src/contexts/AuthContext.tsx
 
+"use client";
+
 import { createContext } from "react";
 import { User, LoginCredentials, RegisterData } from "../types/auth.types";
 

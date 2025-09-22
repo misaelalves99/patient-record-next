@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/app/patients/[id]/page.tsx
+// src/app/patients/[id]/page.tsx
 
 import React from "react";
 import { useRouter } from "next/router";

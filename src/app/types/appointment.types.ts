@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/types/appointment.types.ts
+// src/types/appointment.types.ts
 
 export interface Appointment {
   id: string;

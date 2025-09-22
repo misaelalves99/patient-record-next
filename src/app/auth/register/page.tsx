@@ -1,5 +1,7 @@
 // /electronic-patient-record-platform/src/app/auth/register/page.tsx
 
+"use client";
+
 import React, { useState } from 'react';
 import styles from './page.module.css';
 import { useAuth } from '../../hooks/useAuth';

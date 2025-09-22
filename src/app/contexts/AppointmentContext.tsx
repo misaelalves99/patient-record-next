@@ -1,5 +1,7 @@
 // /electronic-patient-record-platform/src/contexts/AppointmentContext.tsx
 
+"use client";
+
 import { createContext } from "react";
 import { Appointment } from "../types/appointment.types";
 

@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/store/notifications.store.ts
+// src/store/notifications.store.ts
 
 import { create } from 'zustand';
 

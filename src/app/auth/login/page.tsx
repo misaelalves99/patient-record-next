@@ -1,5 +1,7 @@
 // src/app/auth/login/page.tsx
 
+"use client";
+
 import React, { useState } from 'react';
 import styles from './page.module.css';
 import { useAuth } from '../../hooks/useAuth';

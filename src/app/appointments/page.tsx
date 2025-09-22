@@ -1,5 +1,7 @@
 // src/app/appointments/page.tsx
 
+"use client";
+
 import React from 'react';
 import styles from './page.module.css';
 import { useAppointment } from '../hooks/useAppointment';

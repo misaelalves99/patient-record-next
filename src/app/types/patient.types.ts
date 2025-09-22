@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/types/patient.types.ts
+// src/types/patient.types.ts
 
 export interface Patient {
   id: string;

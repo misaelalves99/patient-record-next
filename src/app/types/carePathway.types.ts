@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/types/carePathway.types.ts
+// src/types/carePathway.types.ts
 
 export interface CarePathway {
   id: string;

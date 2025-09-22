@@ -1,4 +1,6 @@
-// /electronic-patient-record-platform/src/app/patients/page.tsx
+// src/app/patients/page.tsx
+
+"use client";
 
 import React from "react";
 import styles from "./page.module.css";

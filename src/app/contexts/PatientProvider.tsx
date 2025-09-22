@@ -1,5 +1,7 @@
 // /electronic-patient-record-platform/src/contexts/PatientProvider.tsx
 
+"use client";
+
 import React, { useState, ReactNode } from "react";
 import { PatientContext } from "./PatientContext";
 import { Patient } from "../types/patient.types";

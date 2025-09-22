@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/app/patients/new/page.tsx
+// src/app/patients/new/page.tsx
 
 import React, { useState } from "react";
 import styles from "./page.module.css";

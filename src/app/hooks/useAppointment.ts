@@ -1,4 +1,6 @@
-// /electronic-patient-record-platform/src/hooks/useAppointment.ts
+// src/hooks/useAppointment.ts
+
+"use client";
 
 import { useContext } from "react";
 import { AppointmentContext } from "../contexts/AppointmentContext";

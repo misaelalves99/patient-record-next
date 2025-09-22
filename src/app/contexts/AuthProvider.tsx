@@ -1,5 +1,7 @@
 // src/contexts/AuthProvider.tsx
 
+"use client";
+
 import React, { useState, ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import { User, LoginCredentials, RegisterData } from "../types/auth.types";

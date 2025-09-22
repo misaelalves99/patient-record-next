@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/styles/tailwind.config.js
+// src/styles/tailwind.config.js
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

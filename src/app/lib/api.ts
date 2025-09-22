@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/lib/api.ts
+// src/lib/api.ts
 
 import axios, { AxiosRequestConfig } from 'axios';
 

@@ -1,5 +1,7 @@
 // src/contexts/CarePathwayContext.tsx
 
+"use client";
+
 import { createContext } from "react";
 import { CarePathway } from "../types/carePathway.types";
 

@@ -1,10 +1,11 @@
-// /electronic-patient-record-platform/src/app/layout.tsx
+// src/app/layout.tsx
 
-import React, { ReactNode } from 'react';
-import './globals.css';
-import './variables.css';
-import styles from './layout.module.css';
-import { Header, Footer, Main } from '../app/components/layout';
+import React, { ReactNode } from "react";
+import "./globals.css";
+import "./variables.css";
+import styles from "./layout.module.css";
+import Navbar from "../app/components/layout/Navbar";
+import Footer from "../app/components/layout/Footer";
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,8 +14,8 @@ interface LayoutProps {
 export const AppLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className={styles.container}>
-      <Header title="Electronic Patient Record Platform" />
-      <Main>{children}</Main>
+      <Navbar />
+      <main className={styles.main}>{children}</main>
       <Footer />
     </div>
   );

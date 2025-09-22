@@ -1,4 +1,4 @@
-// /electronic-patient-record-platform/src/lib/constants.ts
+// src/lib/constants.ts
 
 export const ROLES = {
   ADMIN: 'admin',

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './page.module.css';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 
 export const ProfilePage: React.FC = () => {
   const { user, logout } = useAuth();

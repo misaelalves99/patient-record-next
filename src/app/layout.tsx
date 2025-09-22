@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 import './globals.css';
 import './variables.css';
 import styles from './layout.module.css';
-import { Header, Footer, Main } from '../components/layout';
+import { Header, Footer, Main } from '../app/components/layout';
 
 interface LayoutProps {
   children: ReactNode;

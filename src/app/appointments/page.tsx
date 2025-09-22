@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './page.module.css';
-import { useAppointment } from '../../hooks/useAppointment';
+import { useAppointment } from '../hooks/useAppointment';
 
 export const AppointmentsPage: React.FC = () => {
   const { appointments } = useAppointment();

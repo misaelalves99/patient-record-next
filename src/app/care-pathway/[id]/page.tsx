@@ -4,7 +4,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import styles from './page.module.css';
-import { useCarePathway } from '../../../hooks/useCarePathway';
+import { useCarePathway } from '../../hooks/useCarePathway';
 
 export const CarePathwayDetailsPage: React.FC = () => {
   const router = useRouter();

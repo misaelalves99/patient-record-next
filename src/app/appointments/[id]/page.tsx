@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import styles from './page.module.css';
-import { useAppointment } from '../../../hooks/useAppointment';
+import { useAppointment } from '../../hooks/useAppointment';
 
 export const AppointmentDetailsPage: React.FC = () => {
   const router = useRouter();

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './page.module.css';
-import { useCarePathway } from '../../hooks/useCarePathway';
+import { useCarePathway } from '../hooks/useCarePathway';
 
 export const CarePathwayPage: React.FC = () => {
   const { pathways } = useCarePathway();

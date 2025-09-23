@@ -44,19 +44,70 @@ export const PatientDetailsPage: React.FC<PatientDetailsPageProps> = ({ params }
     <div className={styles.container}>
       <h1 className={styles.title}>Detalhes do Paciente</h1>
 
-      <p><strong>Nome:</strong> {patient.firstName} {patient.lastName}</p>
-      <p><strong>CPF:</strong> {patient.cpf}</p>
-      <p><strong>Email:</strong> {patient.email}</p>
-      {patient.phone && <p><strong>Telefone:</strong> {patient.phone}</p>}
-      {patient.birthDate && <p><strong>Data de nascimento:</strong> {patient.birthDate}</p>}
-      {patient.gender && <p><strong>Gênero:</strong> {patient.gender}</p>}
-      {patient.address && <p><strong>Endereço:</strong> {patient.address}</p>}
-      {patient.city && <p><strong>Cidade:</strong> {patient.city}</p>}
-      {patient.state && <p><strong>UF:</strong> {patient.state}</p>}
-      {patient.createdAt && <p><strong>Criado em:</strong> {new Date(patient.createdAt).toLocaleString()}</p>}
-      {patient.updatedAt && <p><strong>Última atualização:</strong> {new Date(patient.updatedAt).toLocaleString()}</p>}
+      <div className={styles.card}>
+        <div className={styles.row}>
+          <span className={styles.label}>Nome:</span>
+          <span className={styles.value}>{patient.firstName} {patient.lastName}</span>
+        </div>
+        <div className={styles.row}>
+          <span className={styles.label}>CPF:</span>
+          <span className={styles.value}>{patient.cpf}</span>
+        </div>
+        <div className={styles.row}>
+          <span className={styles.label}>Email:</span>
+          <span className={styles.value}>{patient.email}</span>
+        </div>
+        {patient.phone && (
+          <div className={styles.row}>
+            <span className={styles.label}>Telefone:</span>
+            <span className={styles.value}>{patient.phone}</span>
+          </div>
+        )}
+        {patient.birthDate && (
+          <div className={styles.row}>
+            <span className={styles.label}>Data de nascimento:</span>
+            <span className={styles.value}>{patient.birthDate}</span>
+          </div>
+        )}
+        {patient.gender && (
+          <div className={styles.row}>
+            <span className={styles.label}>Gênero:</span>
+            <span className={styles.value}>{patient.gender}</span>
+          </div>
+        )}
+        {patient.address && (
+          <div className={styles.row}>
+            <span className={styles.label}>Endereço:</span>
+            <span className={styles.value}>{patient.address}</span>
+          </div>
+        )}
+        {patient.city && (
+          <div className={styles.row}>
+            <span className={styles.label}>Cidade:</span>
+            <span className={styles.value}>{patient.city}</span>
+          </div>
+        )}
+        {patient.state && (
+          <div className={styles.row}>
+            <span className={styles.label}>UF:</span>
+            <span className={styles.value}>{patient.state}</span>
+          </div>
+        )}
+        {patient.createdAt && (
+          <div className={styles.row}>
+            <span className={styles.label}>Criado em:</span>
+            <span className={styles.value}>{new Date(patient.createdAt).toLocaleString()}</span>
+          </div>
+        )}
+        {patient.updatedAt && (
+          <div className={styles.row}>
+            <span className={styles.label}>Última atualização:</span>
+            <span className={styles.value}>{new Date(patient.updatedAt).toLocaleString()}</span>
+          </div>
+        )}
+      </div>
 
-      <button className={styles.button} onClick={() => router.back()}>
+      <button className={styles.backButton} onClick={() => router.back()}>
         Voltar
       </button>
     </div>

@@ -1,4 +1,5 @@
 // src/app/appointments/[id]/page.tsx
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -13,7 +14,7 @@ interface AppointmentDetailsPageProps {
 }
 
 const AppointmentDetailsPage: React.FC<AppointmentDetailsPageProps> = ({ params }) => {
-  const { id } = params; // id da rota dinâmica
+  const { id } = params;
   const router = useRouter();
 
   const [appointment, setAppointment] = useState<Appointment | null>(null);
@@ -52,16 +53,31 @@ const AppointmentDetailsPage: React.FC<AppointmentDetailsPageProps> = ({ params 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Detalhes do Agendamento</h1>
+
       <div className={styles.card}>
-        <p>
-          <strong>Paciente:</strong>{" "}
-          {patient ? `${patient.firstName} ${patient.lastName}` : "Desconhecido"}
-        </p>
-        <p><strong>Data:</strong> {new Date(appointment.date).toLocaleString()}</p>
-        {appointment.notes && <p><strong>Anotações:</strong> {appointment.notes}</p>}
-        <p><strong>Status:</strong> {appointment.status}</p>
+        <div className={styles.row}>
+          <span className={styles.label}>Paciente:</span>
+          <span className={styles.value}>
+            {patient ? `${patient.firstName} ${patient.lastName}` : "Desconhecido"}
+          </span>
+        </div>
+        <div className={styles.row}>
+          <span className={styles.label}>Data:</span>
+          <span className={styles.value}>{new Date(appointment.date).toLocaleString()}</span>
+        </div>
+        {appointment.notes && (
+          <div className={styles.row}>
+            <span className={styles.label}>Anotações:</span>
+            <span className={styles.value}>{appointment.notes}</span>
+          </div>
+        )}
+        <div className={styles.row}>
+          <span className={styles.label}>Status:</span>
+          <span className={styles.value}>{appointment.status}</span>
+        </div>
       </div>
-      <button className={styles.button} onClick={() => router.push("/appointments")}>
+
+      <button className={styles.backButton} onClick={() => router.push("/appointments")}>
         Voltar
       </button>
     </div>

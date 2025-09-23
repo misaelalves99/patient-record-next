@@ -27,7 +27,7 @@ const AppointmentEditPage: React.FC = () => {
 
     const fetchData = async () => {
       try {
-        const appt = await get<Appointment>(`/appointments?id=${id}`); // CORREÇÃO: Usando searchParam
+        const appt = await get<Appointment>(`/appointments?id=${id}`);
         setAppointment(appt);
 
         const pats = await get<Patient[]>("/patients");
@@ -52,7 +52,7 @@ const AppointmentEditPage: React.FC = () => {
         ...appointment,
         updatedAt: new Date().toISOString(),
       };
-      await put(`/appointments`, updated); // CORREÇÃO: Enviando o corpo completo da requisição
+      await put(`/appointments`, updated);
       router.push("/appointments");
     } catch (error) {
       console.error("Erro ao editar agendamento:", error);
@@ -68,51 +68,66 @@ const AppointmentEditPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Editar Agendamento</h1>
+
       <form onSubmit={handleSubmit} className={styles.form}>
-        <label>Paciente</label>
-        <select
-          value={appointment.patientId}
-          onChange={(e) => setAppointment({ ...appointment, patientId: e.target.value })}
-          required
-        >
-          {patients.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.firstName} {p.lastName}
-            </option>
-          ))}
-        </select>
+        <label className={styles.label}>
+          Paciente
+          <select
+            value={appointment.patientId}
+            onChange={(e) => setAppointment({ ...appointment, patientId: e.target.value })}
+            required
+          >
+            {patients.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.firstName} {p.lastName}
+              </option>
+            ))}
+          </select>
+        </label>
 
-        <label>Data</label>
-        <input
-          type="datetime-local"
-          value={appointment.date.slice(0, 16)}
-          onChange={(e) => setAppointment({ ...appointment, date: e.target.value })}
-          required
-        />
+        <label className={styles.label}>
+          Data
+          <input
+            type="datetime-local"
+            value={appointment.date.slice(0, 16)}
+            onChange={(e) => setAppointment({ ...appointment, date: e.target.value })}
+            required
+          />
+        </label>
 
-        <label>Anotações</label>
-        <textarea
-          value={appointment.notes || ""}
-          onChange={(e) => setAppointment({ ...appointment, notes: e.target.value })}
-        />
+        <label className={styles.label}>
+          Anotações
+          <textarea
+            value={appointment.notes || ""}
+            onChange={(e) => setAppointment({ ...appointment, notes: e.target.value })}
+          />
+        </label>
 
-        <label>Status</label>
-        <select
-          value={appointment.status}
-          onChange={(e) =>
-            setAppointment({
-              ...appointment,
-              status: e.target.value as "scheduled" | "completed" | "canceled",
-            })
-          }
-        >
-          <option value="scheduled">Agendado</option>
-          <option value="completed">Concluído</option>
-          <option value="canceled">Cancelado</option>
-        </select>
+        <label className={styles.label}>
+          Status
+          <select
+            value={appointment.status}
+            onChange={(e) =>
+              setAppointment({
+                ...appointment,
+                status: e.target.value as "scheduled" | "completed" | "canceled",
+              })
+            }
+          >
+            <option value="scheduled">Agendado</option>
+            <option value="completed">Concluído</option>
+            <option value="canceled">Cancelado</option>
+          </select>
+        </label>
 
         <button type="submit" className={styles.button} disabled={saving}>
           {saving ? "Salvando..." : "Salvar Alterações"}
+        </button>
+        <button
+            className={styles.backButton}
+            onClick={() => router.push("/appointments")}
+        >
+            Voltar
         </button>
       </form>
     </div>

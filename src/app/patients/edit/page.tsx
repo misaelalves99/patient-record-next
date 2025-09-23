@@ -1,6 +1,5 @@
 // src/app/patients/edit/page.tsx
 
-// src/app/patients/edit/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -18,7 +17,6 @@ const EditPatientPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Campos do formulário
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [cpf, setCpf] = useState("");
@@ -38,7 +36,6 @@ const EditPatientPage: React.FC = () => {
 
     const fetchPatient = async () => {
       try {
-        // <-- CORREÇÃO: URL com query string
         const found = await get<Patient>(`/patients?id=${id}`);
         if (found) {
           setPatient(found);
@@ -53,7 +50,6 @@ const EditPatientPage: React.FC = () => {
           setCity(found.city || "");
           setState(found.state);
         } else {
-          console.error("Paciente não encontrado");
           alert("Paciente não encontrado.");
         }
       } catch (error) {
@@ -88,7 +84,6 @@ const EditPatientPage: React.FC = () => {
         updatedAt: new Date().toISOString(),
       };
 
-      // <-- CORREÇÃO: PUT sem ID na URL
       await put("/patients", updatedPatient);
       alert("Paciente atualizado com sucesso!");
       router.push("/patients");
@@ -106,6 +101,7 @@ const EditPatientPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Editar Paciente</h1>
+
       <form onSubmit={handleSave} className={styles.form}>
         <label className={styles.label}>
           Nome
@@ -222,6 +218,12 @@ const EditPatientPage: React.FC = () => {
 
         <button type="submit" className={styles.button} disabled={saving}>
           {saving ? "Salvando..." : "Salvar"}
+        </button>
+        <button
+            className={styles.backButton}
+            onClick={() => router.push("/patients")}
+        >
+            Voltar
         </button>
       </form>
     </div>

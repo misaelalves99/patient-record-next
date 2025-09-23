@@ -1,10 +1,9 @@
 // src/app/api/patients/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import { Patient } from "../../types/patient.types";
 
-// Base de dados temporária
-let patients: Patient[] = [
+// Base de dados temporária (persistirá na memória enquanto o servidor rodar)
+export let patients: Patient[] = [
   {
     id: "1",
     firstName: "João",
@@ -37,14 +36,8 @@ let patients: Patient[] = [
   },
 ];
 
-// GET: todos os pacientes ou por ID
-export async function GET(req: NextRequest, { params }: { params?: { id?: string } }) {
-  const id = params?.id;
-  if (id) {
-    const patient = patients.find((p) => p.id === id);
-    if (!patient) return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
-    return NextResponse.json(patient);
-  }
+// GET: todos os pacientes
+export async function GET() {
   return NextResponse.json(patients);
 }
 
@@ -63,24 +56,4 @@ export async function POST(req: NextRequest) {
 
   patients.push(patient);
   return NextResponse.json(patient, { status: 201 });
-}
-
-// PUT: atualizar paciente
-export async function PUT(req: NextRequest) {
-  const updatedPatient = await req.json();
-  const index = patients.findIndex((p) => p.id === updatedPatient.id);
-  if (index === -1) return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
-
-  patients[index] = { ...patients[index], ...updatedPatient, updatedAt: new Date().toISOString() };
-  return NextResponse.json(patients[index]);
-}
-
-// DELETE: deletar paciente
-export async function DELETE(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
-  if (!id) return NextResponse.json({ error: "ID é obrigatório" }, { status: 400 });
-
-  patients = patients.filter((p) => p.id !== id);
-  return NextResponse.json({ success: true });
 }

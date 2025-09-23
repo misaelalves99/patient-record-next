@@ -12,7 +12,6 @@ export const Navbar: React.FC = () => {
         <li><Link href="/">Início</Link></li>
         <li><Link href="/patients">Pacientes</Link></li>
         <li><Link href="/appointments">Agendamentos</Link></li>
-        <li><Link href="/care-pathway">Caminhos de Cuidado</Link></li>
         <li><Link href="/auth/login">Entrar</Link></li>
         <li><Link href="/auth/register">Registrar</Link></li>
       </ul>

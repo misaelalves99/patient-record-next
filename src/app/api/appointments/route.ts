@@ -1,39 +1,80 @@
 // src/app/api/appointments/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { Appointment } from '../../types/appointment.types';
+import { NextRequest, NextResponse } from "next/server";
+import { Appointment } from "../../types/appointment.types";
 
+// Base de dados temporária
 let appointments: Appointment[] = [
   {
-    id: 'a1',
-    patientId: 'p1',
-    doctorId: 'd1',
+    id: "1",
+    patientId: "1",
+    doctorId: "1",
     date: new Date().toISOString(),
-    status: 'scheduled',
-    notes: 'Primeira consulta',
+    status: "scheduled",
+    notes: "Primeira consulta",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
-    id: 'a2',
-    patientId: 'p2',
-    doctorId: 'd2',
+    id: "2",
+    patientId: "2",
+    doctorId: "2",
     date: new Date().toISOString(),
-    status: 'completed',
-    notes: 'Consulta de retorno',
+    status: "completed",
+    notes: "Consulta de retorno",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
 ];
 
-export async function GET() {
+// GET: todos ou por query string ?id=
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (id) {
+    const appointment = appointments.find((a) => a.id === id);
+    if (!appointment)
+      return NextResponse.json({ error: "Agendamento não encontrado" }, { status: 404 });
+    return NextResponse.json(appointment);
+  }
+
   return NextResponse.json(appointments);
 }
 
+// POST: criar novo appointment
 export async function POST(req: NextRequest) {
   const newAppt = await req.json();
-  newAppt.id = `a${appointments.length + 1}`;
-  newAppt.createdAt = new Date().toISOString();
-  newAppt.updatedAt = new Date().toISOString();
-  appointments.push(newAppt);
-  return NextResponse.json(newAppt, { status: 201 });
+  const id = `${appointments.length + 1}`;
+  const now = new Date().toISOString();
+
+  const appointment: Appointment = {
+    id,
+    ...newAppt,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  appointments.push(appointment);
+  return NextResponse.json(appointment, { status: 201 });
+}
+
+// PUT: atualizar appointment (body deve conter id)
+export async function PUT(req: NextRequest) {
+  const updatedAppt = await req.json();
+  const index = appointments.findIndex((a) => a.id === updatedAppt.id);
+  if (index === -1)
+    return NextResponse.json({ error: "Agendamento não encontrado" }, { status: 404 });
+
+  appointments[index] = { ...appointments[index], ...updatedAppt, updatedAt: new Date().toISOString() };
+  return NextResponse.json(appointments[index]);
+}
+
+// DELETE: deletar por query string ?id=
+export async function DELETE(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "ID é obrigatório" }, { status: 400 });
+
+  appointments = appointments.filter((a) => a.id !== id);
+  return NextResponse.json({ success: true });
 }

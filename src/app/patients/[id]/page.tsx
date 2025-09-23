@@ -3,14 +3,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
 import { get } from "../../lib/api";
 
-export const PatientDetailsPage: React.FC = () => {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+interface PatientDetailsPageProps {
+  params: { id: string };
+}
+
+export const PatientDetailsPage: React.FC<PatientDetailsPageProps> = ({ params }) => {
+  const { id } = params;
   const router = useRouter();
 
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -22,7 +25,7 @@ export const PatientDetailsPage: React.FC = () => {
     const fetchPatient = async () => {
       try {
         const data = await get<Patient[]>("/patients");
-        const found = data.find((p) => p.id === id);
+        const found = data.find((p) => p.id.replace(/^p/, "") === id); 
         setPatient(found || null);
       } catch (error) {
         console.error("Erro ao carregar paciente:", error);

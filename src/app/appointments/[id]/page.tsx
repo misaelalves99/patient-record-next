@@ -1,39 +1,53 @@
 // src/app/appointments/[id]/page.tsx
-
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Appointment } from "../../types/appointment.types";
 import { Patient } from "../../types/patient.types";
 import { get } from "../../lib/api";
 
-const AppointmentDetailsPage: React.FC = () => {
-  const { id } = useParams();
+interface AppointmentDetailsPageProps {
+  params: { id: string };
+}
+
+const AppointmentDetailsPage: React.FC<AppointmentDetailsPageProps> = ({ params }) => {
+  const { id } = params; // id da rota dinâmica
   const router = useRouter();
+
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!id) return;
-      try {
-        const appt = await get<Appointment>(`/appointments/${id}`);
-        setAppointment(appt);
+    if (!id) {
+      setLoading(false);
+      return;
+    }
 
-        if (appt.patientId) {
-          const pat = await get<Patient>(`/patients/${appt.patientId}`);
-          setPatient(pat);
+    const fetchData = async () => {
+      try {
+        const appt = await get<Appointment>(`/appointments?id=${id}`);
+        setAppointment(appt || null);
+
+        if (appt?.patientId) {
+          const pat = await get<Patient>(`/patients?id=${appt.patientId}`);
+          setPatient(pat || null);
         }
       } catch (error) {
         console.error("Erro ao carregar detalhes:", error);
+        alert("Falha ao carregar detalhes do agendamento.");
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchData();
   }, [id]);
 
-  if (!appointment) return <p className={styles.message}>Carregando detalhes...</p>;
+  if (loading) return <p className={styles.message}>Carregando detalhes...</p>;
+  if (!appointment) return <p className={styles.message}>Agendamento não encontrado.</p>;
 
   return (
     <div className={styles.container}>

@@ -2,13 +2,15 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
-import { v4 as uuidv4 } from "uuid";
-import { post } from "../../lib/api";
+import { post, get } from "../../lib/api";
 
 export const CreatePatientPage: React.FC = () => {
+  const router = useRouter();
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [cpf, setCpf] = useState("");
@@ -17,16 +19,36 @@ export const CreatePatientPage: React.FC = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [city, setCity] = useState(""); // campo adicionado
+  const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // 🔹 Carregar pacientes para saber qual será o próximo ID
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const data = await get<Patient[]>("/patients");
+        setPatients(data);
+      } catch (error) {
+        console.error("Erro ao carregar pacientes:", error);
+      }
+    };
+    fetchPatients();
+  }, []);
+
+  const getNextId = (): string => {
+    if (patients.length === 0) return "1"; // se não houver pacientes, começa do 1
+    const ids = patients.map((p) => parseInt(p.id.replace(/^p/, ""), 10));
+    const maxId = Math.max(...ids);
+    return String(maxId + 1);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     const newPatient: Patient = {
-      id: uuidv4(),
+      id: getNextId(), // agora gera ID sequencial
       firstName,
       lastName,
       cpf,
@@ -35,7 +57,7 @@ export const CreatePatientPage: React.FC = () => {
       phone,
       email,
       address,
-      city, // incluído
+      city,
       state,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -44,17 +66,9 @@ export const CreatePatientPage: React.FC = () => {
     try {
       await post<Patient>("/patients", newPatient);
       alert("Paciente criado com sucesso!");
-      // reset do formulário
-      setFirstName("");
-      setLastName("");
-      setCpf("");
-      setBirthDate("");
-      setGender("male");
-      setPhone("");
-      setEmail("");
-      setAddress("");
-      setCity(""); // reset
-      setState("");
+
+      // 🔹 Redirecionar para a listagem
+      router.push("/patients");
     } catch (error) {
       console.error("Erro ao criar paciente:", error);
       alert("Falha ao criar paciente.");
@@ -67,6 +81,7 @@ export const CreatePatientPage: React.FC = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>Novo Paciente</h1>
       <form onSubmit={handleSubmit} className={styles.form}>
+        {/* Campos do formulário (iguais antes) */}
         <label className={styles.label}>
           Nome
           <input

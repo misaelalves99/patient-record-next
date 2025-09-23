@@ -1,5 +1,6 @@
 // src/app/patients/edit/page.tsx
 
+// src/app/patients/edit/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -8,7 +9,7 @@ import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
 import { get, put } from "../../lib/api";
 
-export const EditPatientPage: React.FC = () => {
+const EditPatientPage: React.FC = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -30,11 +31,15 @@ export const EditPatientPage: React.FC = () => {
   const [state, setState] = useState("");
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
     const fetchPatient = async () => {
       try {
-        const data = await get<Patient[]>("/patients");
-        const found = data.find((p) => p.id === id);
+        // <-- CORREÇÃO: URL com query string
+        const found = await get<Patient>(`/patients?id=${id}`);
         if (found) {
           setPatient(found);
           setFirstName(found.firstName);
@@ -47,6 +52,9 @@ export const EditPatientPage: React.FC = () => {
           setAddress(found.address);
           setCity(found.city || "");
           setState(found.state);
+        } else {
+          console.error("Paciente não encontrado");
+          alert("Paciente não encontrado.");
         }
       } catch (error) {
         console.error("Erro ao carregar paciente:", error);
@@ -55,14 +63,15 @@ export const EditPatientPage: React.FC = () => {
         setLoading(false);
       }
     };
+
     fetchPatient();
   }, [id]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!patient) return;
-    setSaving(true);
 
+    setSaving(true);
     try {
       const updatedPatient: Patient = {
         ...patient,
@@ -79,7 +88,8 @@ export const EditPatientPage: React.FC = () => {
         updatedAt: new Date().toISOString(),
       };
 
-      await put(`/patients/${patient.id}`, updatedPatient);
+      // <-- CORREÇÃO: PUT sem ID na URL
+      await put("/patients", updatedPatient);
       alert("Paciente atualizado com sucesso!");
       router.push("/patients");
     } catch (error) {
@@ -91,6 +101,7 @@ export const EditPatientPage: React.FC = () => {
   };
 
   if (loading) return <p className={styles.message}>Carregando paciente...</p>;
+  if (!patient) return <p className={styles.message}>Paciente não encontrado.</p>;
 
   return (
     <div className={styles.container}>
@@ -145,9 +156,7 @@ export const EditPatientPage: React.FC = () => {
           <select
             className={styles.input}
             value={gender}
-            onChange={(e) =>
-              setGender(e.target.value as "male" | "female" | "other")
-            }
+            onChange={(e) => setGender(e.target.value as "male" | "female" | "other")}
             required
           >
             <option value="male">Masculino</option>

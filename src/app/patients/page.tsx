@@ -36,6 +36,9 @@ export const PatientsPage: React.FC = () => {
   if (loading)
     return <p className={styles.message}>Carregando pacientes...</p>;
 
+  // Função para normalizar ID (remove prefixo "p")
+  const normalizeId = (id: string) => id.replace(/^p/, "");
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Pacientes</h1>
@@ -60,35 +63,42 @@ export const PatientsPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {patients.map((p) => (
-              <tr key={p.id}>
-                <td>{p.id}</td>
-                <td>{p.firstName} {p.lastName}</td>
-                <td>{p.phone}</td>
-                <td className={styles.actions}>
-                  <AiOutlineEye
-                    className={`${styles.iconButton} ${styles.detail}`}
-                    title="Detalhes"
-                    onClick={() => router.push(`/patients/${p.id}`)}
-                  />
-                  <AiOutlineEdit
-                    className={`${styles.iconButton} ${styles.edit}`}
-                    title="Editar"
-                    onClick={() => router.push(`/patients/edit?id=${p.id}`)}
-                  />
-                  <AiOutlineDelete
-                    className={`${styles.iconButton} ${styles.delete}`}
-                    title="Excluir"
-                    onClick={() => router.push(`/patients/delete?id=${p.id}`)}
-                  />
-                  <AiOutlineFileText
-                    className={`${styles.iconButton} ${styles.report}`}
-                    title="Relatório de Tratamento"
-                    onClick={() => router.push(`/patients/report?id=${p.id}`)}
-                  />
-                </td>
-              </tr>
-            ))}
+            {patients.map((p) => {
+              const cleanId = normalizeId(p.id);
+              return (
+                <tr key={p.id}>
+                  <td>{cleanId}</td>
+                  <td>
+                    {p.firstName} {p.lastName}
+                  </td>
+                  <td>{p.phone}</td>
+                  <td className={styles.actions}>
+                    <AiOutlineEye
+                      className={`${styles.iconButton} ${styles.detail}`}
+                      title="Detalhes"
+                      onClick={() => router.push(`/patients/${cleanId}`)}
+                    />
+                    <AiOutlineEdit
+                      className={`${styles.iconButton} ${styles.edit}`}
+                      title="Editar"
+                      onClick={() => router.push(`/patients/edit?id=${cleanId}`)}
+                    />
+                    <AiOutlineDelete
+                      className={`${styles.iconButton} ${styles.delete}`}
+                      title="Excluir"
+                      onClick={() => router.push(`/patients/delete?id=${cleanId}`)}
+                    />
+                    <AiOutlineFileText
+                      className={`${styles.iconButton} ${styles.report}`}
+                      title="Relatório de Tratamento"
+                      onClick={() =>
+                        router.push(`/patients/report?id=${cleanId}`)
+                      }
+                    />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

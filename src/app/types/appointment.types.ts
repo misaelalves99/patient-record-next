@@ -6,7 +6,7 @@ export interface Appointment {
   carePathwayId?: string;
   doctorId: string;
   date: string;
-  status: 'scheduled' | 'completed' | 'canceled';
+  status: "scheduled" | "completed" | "canceled";
   notes?: string;
   createdAt: string;
   updatedAt: string;

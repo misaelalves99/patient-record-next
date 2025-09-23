@@ -4,10 +4,14 @@ export interface Patient {
   id: string;
   firstName: string;
   lastName: string;
+  cpf: string;
+  birthDate: string;
+  gender: 'male' | 'female' | 'other';
+  phone: string;
   email: string;
-  phone?: string;
-  dateOfBirth?: string;
-  gender?: 'male' | 'female' | 'other';
+  address: string;
+  city: string;
+  state: string;
   createdAt: string;
   updatedAt: string;
 }

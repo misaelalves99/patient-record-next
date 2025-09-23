@@ -3,16 +3,18 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Appointment } from "../types/appointment.types";
 import { Patient } from "../types/patient.types";
 import { get } from "../lib/api";
+import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 
-export const AppointmentsPage: React.FC = () => {
+const AppointmentsPage: React.FC = () => {
+  const router = useRouter();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,31 +43,52 @@ export const AppointmentsPage: React.FC = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>Agendamentos</h1>
 
+      <button
+        className={styles.createButton}
+        onClick={() => router.push("/appointments/create")}
+      >
+        Novo Agendamento
+      </button>
+
       {appointments.length === 0 ? (
         <p className={styles.message}>Nenhum agendamento encontrado.</p>
       ) : (
-        <ul className={styles.list}>
-          {appointments.map((appt) => (
-            <li
-              key={appt.id}
-              className={styles.item}
-              onClick={() => setSelectedAppointment(appt)}
-            >
-              <span className={styles.patient}>{getPatientName(appt.patientId)}</span>
-              <span className={styles.date}>{new Date(appt.date).toLocaleString()}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {selectedAppointment && (
-        <div className={styles.card}>
-          <h2>Detalhes do Agendamento</h2>
-          <p><strong>Paciente:</strong> {getPatientName(selectedAppointment.patientId)}</p>
-          <p><strong>Data:</strong> {new Date(selectedAppointment.date).toLocaleString()}</p>
-          {selectedAppointment.notes && <p><strong>Anotações:</strong> {selectedAppointment.notes}</p>}
-          <p><strong>Status:</strong> {selectedAppointment.status}</p>
-        </div>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Paciente</th>
+              <th>Data</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {appointments.map((appt) => (
+              <tr key={appt.id}>
+                <td>{appt.id}</td>
+                <td>{getPatientName(appt.patientId)}</td>
+                <td>{new Date(appt.date).toLocaleString()}</td>
+                <td className={styles.actions}>
+                  <AiOutlineEye
+                    className={`${styles.iconButton} ${styles.detail}`}
+                    title="Detalhes"
+                    onClick={() => router.push(`/appointments/${appt.id}`)}
+                  />
+                  <AiOutlineEdit
+                    className={`${styles.iconButton} ${styles.edit}`}
+                    title="Editar"
+                    onClick={() => router.push(`/appointments/edit?id=${appt.id}`)}
+                  />
+                  <AiOutlineDelete
+                    className={`${styles.iconButton} ${styles.delete}`}
+                    title="Excluir"
+                    onClick={() => router.push(`/appointments/delete?id=${appt.id}`)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

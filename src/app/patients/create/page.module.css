@@ -1,4 +1,4 @@
-/* src/app/patients/new/page.module.css */
+/* src/app/patients/create/page.module.css */
 
 .container {
   max-width: 600px;
@@ -73,7 +73,8 @@
   cursor: not-allowed;
 }
 
-p {
+/* Criamos uma classe para mensagens/paragraphs */
+.message {
   font-size: 1rem;
   color: #555;
   text-align: center;

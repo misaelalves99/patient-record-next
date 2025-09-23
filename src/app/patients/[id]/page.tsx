@@ -3,14 +3,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
 import { get } from "../../lib/api";
 
 export const PatientDetailsPage: React.FC = () => {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
   const router = useRouter();
-  const { id } = router.query;
+
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,15 +39,23 @@ export const PatientDetailsPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>
-        {patient.firstName} {patient.lastName}
-      </h1>
-      <div className={styles.card}>
-        <p><strong>Email:</strong> {patient.email}</p>
-        {patient.phone && <p><strong>Telefone:</strong> {patient.phone}</p>}
-        {patient.dateOfBirth && <p><strong>Data de nascimento:</strong> {patient.dateOfBirth}</p>}
-        {patient.gender && <p><strong>Gênero:</strong> {patient.gender}</p>}
-      </div>
+      <h1 className={styles.title}>Detalhes do Paciente</h1>
+
+      <p><strong>Nome:</strong> {patient.firstName} {patient.lastName}</p>
+      <p><strong>CPF:</strong> {patient.cpf}</p>
+      <p><strong>Email:</strong> {patient.email}</p>
+      {patient.phone && <p><strong>Telefone:</strong> {patient.phone}</p>}
+      {patient.birthDate && <p><strong>Data de nascimento:</strong> {patient.birthDate}</p>}
+      {patient.gender && <p><strong>Gênero:</strong> {patient.gender}</p>}
+      {patient.address && <p><strong>Endereço:</strong> {patient.address}</p>}
+      {patient.city && <p><strong>Cidade:</strong> {patient.city}</p>}
+      {patient.state && <p><strong>UF:</strong> {patient.state}</p>}
+      {patient.createdAt && <p><strong>Criado em:</strong> {new Date(patient.createdAt).toLocaleString()}</p>}
+      {patient.updatedAt && <p><strong>Última atualização:</strong> {new Date(patient.updatedAt).toLocaleString()}</p>}
+
+      <button className={styles.button} onClick={() => router.back()}>
+        Voltar
+      </button>
     </div>
   );
 };

@@ -8,11 +8,11 @@ import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
 import { initPatients } from "../../lib/fakePatientApi";
 
-interface PatientDetailsPageProps {
+interface PageProps {
   params: { id: string };
 }
 
-const PatientDetailsPage: React.FC<PatientDetailsPageProps> = ({ params }) => {
+const PatientDetailsPage = ({ params }: PageProps) => {
   const { id } = params;
   const router = useRouter();
 

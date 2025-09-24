@@ -10,11 +10,11 @@ import { Patient } from "../../types/patient.types";
 import { initAppointments } from "../../lib/fakeAppointmentApi";
 import { initPatients } from "../../lib/fakePatientApi";
 
-interface AppointmentDetailsPageProps {
+interface PageProps {
   params: { id: string };
 }
 
-const AppointmentDetailsPage: React.FC<AppointmentDetailsPageProps> = ({ params }) => {
+const AppointmentDetailsPage = ({ params }: PageProps) => {
   const { id } = params;
   const router = useRouter();
 

@@ -18,7 +18,7 @@ export default function EditPatientPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    // Garantir que seja executado somente no cliente
+    // 🔹 Executa somente no cliente
     const id = searchParams.get("id");
     if (!id) {
       setLoading(false);
@@ -27,7 +27,11 @@ export default function EditPatientPage() {
 
     const patients = initPatients();
     const pat = patients.find((p) => p.id === id) || null;
-    if (!pat) alert("Paciente não encontrado.");
+
+    if (!pat) {
+      alert("Paciente não encontrado.");
+    }
+
     setPatient(pat);
     setLoading(false);
   }, [searchParams]);
@@ -63,8 +67,8 @@ export default function EditPatientPage() {
     }
   };
 
-  if (loading) return <p>Carregando paciente...</p>;
-  if (!patient) return <p>Paciente não encontrado.</p>;
+  if (loading) return <p className={styles.message}>Carregando paciente...</p>;
+  if (!patient) return <p className={styles.message}>Paciente não encontrado.</p>;
 
   return (
     <div className={styles.container}>

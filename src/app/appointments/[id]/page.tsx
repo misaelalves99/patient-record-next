@@ -6,19 +6,21 @@ import styles from "./page.module.css";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-interface PageProps {
-  params: { id: string };
+interface Params {
+  id: string;
 }
 
-export default function AppointmentDetailsPage({ params }: PageProps) {
+interface Props {
+  params: Params;
+}
+
+export default function AppointmentDetailsPage({ params }: Props) {
   const { id } = params;
 
-  // Buscar agendamento específico
   const appointments = initAppointments();
   const appointment = appointments.find(a => a.id === id);
   if (!appointment) notFound();
 
-  // Buscar paciente correspondente
   const patients = initPatients();
   const patient = patients.find(p => p.id === appointment.patientId) || null;
 
@@ -50,6 +52,7 @@ export default function AppointmentDetailsPage({ params }: PageProps) {
           <span className={styles.label}>Status:</span>
           <span className={styles.value}>{appointment.status}</span>
         </div>
+
         <Link href="/appointments" className={styles.backButton}>
           Voltar
         </Link>

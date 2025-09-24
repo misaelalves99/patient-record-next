@@ -5,15 +5,7 @@ import styles from "./page.module.css";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-interface Params {
-  id: string;
-}
-
-interface Props {
-  params: Params;
-}
-
-export default function PatientDetailsPage({ params }: Props) {
+export default function PatientDetailsPage({ params }: { params: { id: string } }) {
   const { id } = params;
 
   const patients = initPatients();

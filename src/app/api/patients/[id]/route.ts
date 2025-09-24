@@ -1,13 +1,18 @@
 // src/app/api/patients/[id]/route.ts
-
-// src/app/api/patients/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { Patient } from "../../../types/patient.types";
 import { initPatients, savePatients } from "../../../lib/fakePatientApi";
 
+// Função util para extrair ID do path
+function getIdFromUrl(req: NextRequest) {
+  // req.nextUrl.pathname = "/api/patients/123"
+  const parts = req.nextUrl.pathname.split("/");
+  return parts[parts.length - 1];
+}
+
 // GET paciente por ID
-export async function GET(req: NextRequest, { params }: { params: Record<string, string> }) {
-  const id = params.id;
+export async function GET(req: NextRequest) {
+  const id = getIdFromUrl(req);
   const patients = initPatients();
   const patient = patients.find((p) => p.id === id);
 
@@ -19,11 +24,8 @@ export async function GET(req: NextRequest, { params }: { params: Record<string,
 }
 
 // PUT: atualizar paciente
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: Record<string, string> }
-) {
-  const id = params.id;
+export async function PUT(req: NextRequest) {
+  const id = getIdFromUrl(req);
   const updatedData: Partial<Omit<Patient, "id" | "createdAt">> = await req.json();
   const patients = initPatients();
 
@@ -39,11 +41,8 @@ export async function PUT(
 }
 
 // DELETE: remover paciente
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Record<string, string> }
-) {
-  const id = params.id;
+export async function DELETE(req: NextRequest) {
+  const id = getIdFromUrl(req);
   const patients = initPatients();
 
   const index = patients.findIndex((p) => p.id === id);

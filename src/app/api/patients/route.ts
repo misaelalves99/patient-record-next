@@ -4,32 +4,45 @@ import { NextRequest, NextResponse } from "next/server";
 import { Patient } from "../../types/patient.types";
 import { initPatients, savePatients } from "../../lib/fakePatientApi";
 
-// GET paciente por ID
-export async function GET(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
+// GET: listar pacientes ou buscar por query ?id=123
+export async function GET(req: NextRequest) {
   const patients = initPatients();
-  const patient = patients.find((p) => p.id === id);
+  const id = req.nextUrl.searchParams.get("id");
 
-  if (!patient) {
-    return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
+  if (id) {
+    const patient = patients.find((p) => p.id === id);
+    if (!patient) {
+      return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
+    }
+    return NextResponse.json(patient);
   }
 
-  return NextResponse.json(patient);
+  return NextResponse.json(patients);
 }
 
-// PUT: atualizar paciente
-export async function PUT(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
-  const updatedData: Partial<Omit<Patient, "id" | "createdAt">> = await req.json();
+// POST: criar novo paciente
+export async function POST(req: NextRequest) {
+  const newPatient: Omit<Patient, "id" | "createdAt"> = await req.json();
   const patients = initPatients();
 
-  const index = patients.findIndex((p) => p.id === id);
+  const patient: Patient = {
+    id: (Math.max(0, ...patients.map((p) => Number(p.id))) + 1).toString(),
+    createdAt: new Date().toISOString(),
+    ...newPatient,
+  };
+
+  patients.push(patient);
+  savePatients(patients);
+
+  return NextResponse.json(patient, { status: 201 });
+}
+
+// PUT: atualizar paciente via body { id, ...fields }
+export async function PUT(req: NextRequest) {
+  const updatedData: Partial<Omit<Patient, "createdAt">> & { id: string } = await req.json();
+  const patients = initPatients();
+
+  const index = patients.findIndex((p) => p.id === updatedData.id);
   if (index === -1) {
     return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
   }
@@ -40,14 +53,12 @@ export async function PUT(
   return NextResponse.json(patients[index]);
 }
 
-// DELETE: remover paciente
-export async function DELETE(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
-  const patients = initPatients();
+// DELETE: remover paciente via query ?id=123
+export async function DELETE(req: NextRequest) {
+  const id = req.nextUrl.searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "ID não fornecido" }, { status: 400 });
 
+  const patients = initPatients();
   const index = patients.findIndex((p) => p.id === id);
   if (index === -1) {
     return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });

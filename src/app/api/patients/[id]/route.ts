@@ -5,11 +5,8 @@ import { Patient } from "../../../types/patient.types";
 import { initPatients, savePatients } from "../../../lib/fakePatientApi";
 
 // GET paciente por ID
-export async function GET(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params; // <-- aqui está correto para Vercel
   const patients = initPatients();
   const patient = patients.find((p) => p.id === id);
 
@@ -20,11 +17,8 @@ export async function GET(
 }
 
 // PUT: atualizar paciente
-export async function PUT(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const updatedData: Partial<Omit<Patient, "id" | "createdAt">> = await req.json();
   const patients = initPatients();
 
@@ -39,11 +33,8 @@ export async function PUT(
 }
 
 // DELETE: remover paciente
-export async function DELETE(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
-  const { id } = context.params;
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const patients = initPatients();
 
   const index = patients.findIndex((p) => p.id === id);

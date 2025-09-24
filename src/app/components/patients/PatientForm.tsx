@@ -1,7 +1,7 @@
 // src/components/patients/PatientForm.tsx
 
 import React from "react";
-import styles from "./PatientForm.module.css";
+import styles from "../../components/patients/PatientForm.module.css";
 import { Patient } from "../../types/patient.types";
 
 type PatientFormProps = {

@@ -18,8 +18,8 @@ export const LoginPage: React.FC = () => {
       alert('Login realizado com sucesso!');
       setEmail('');
       setPassword('');
-    } catch (_error) {
-      // Usamos "_error" para evitar o warning de variável não utilizada
+    } catch {
+      // catch sem parâmetro evita warning de variável não utilizada
       alert('Falha no login.');
     }
   };

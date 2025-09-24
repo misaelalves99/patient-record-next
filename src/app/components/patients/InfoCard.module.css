@@ -1,0 +1,34 @@
+/* src/components/patients/InfoCard.module.css */
+
+.infoCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.infoIcon {
+  font-size: 2rem;
+  color: var(--primary-color);
+  flex-shrink: 0;
+}
+
+.infoContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.infoLabel {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.infoValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0.25rem 0 0;
+}

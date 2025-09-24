@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import styles from './page.module.css';
 import { useAuth } from '../../hooks/useAuth';
 
-export const LoginPage: React.FC = () => {
+export default function LoginPage() {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +19,6 @@ export const LoginPage: React.FC = () => {
       setEmail('');
       setPassword('');
     } catch {
-      // catch sem parâmetro evita warning de variável não utilizada
       alert('Falha no login.');
     }
   };
@@ -54,6 +53,4 @@ export const LoginPage: React.FC = () => {
       </form>
     </div>
   );
-};
-
-export default LoginPage;
+}

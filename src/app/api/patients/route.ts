@@ -4,25 +4,57 @@ import { NextRequest, NextResponse } from "next/server";
 import { Patient } from "../../types/patient.types";
 import { initPatients, savePatients } from "../../lib/fakePatientApi";
 
-// GET: retorna todos os pacientes
-export async function GET() {
+// GET paciente por ID
+export async function GET(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = context.params;
   const patients = initPatients();
-  return NextResponse.json(patients);
+  const patient = patients.find((p) => p.id === id);
+
+  if (!patient) {
+    return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
+  }
+
+  return NextResponse.json(patient);
 }
 
-// POST: cria paciente
-export async function POST(req: NextRequest) {
-  const newPatientData: Omit<Patient, "id" | "createdAt" | "updatedAt"> = await req.json();
+// PUT: atualizar paciente
+export async function PUT(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = context.params;
+  const updatedData: Partial<Omit<Patient, "id" | "createdAt">> = await req.json();
   const patients = initPatients();
 
-  const ids = patients.map((p) => parseInt(p.id, 10));
-  const maxId = ids.length > 0 ? Math.max(...ids) : 0;
-  const id = String(maxId + 1);
-  const now = new Date().toISOString();
+  const index = patients.findIndex((p) => p.id === id);
+  if (index === -1) {
+    return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
+  }
 
-  const patient: Patient = { id, ...newPatientData, createdAt: now, updatedAt: now };
-  patients.push(patient);
+  patients[index] = { ...patients[index], ...updatedData, updatedAt: new Date().toISOString() };
   savePatients(patients);
 
-  return NextResponse.json(patient, { status: 201 });
+  return NextResponse.json(patients[index]);
+}
+
+// DELETE: remover paciente
+export async function DELETE(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = context.params;
+  const patients = initPatients();
+
+  const index = patients.findIndex((p) => p.id === id);
+  if (index === -1) {
+    return NextResponse.json({ error: "Paciente não encontrado" }, { status: 404 });
+  }
+
+  patients.splice(index, 1);
+  savePatients(patients);
+
+  return NextResponse.json({ success: true });
 }

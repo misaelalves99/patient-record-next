@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Appointment } from "../../types/appointment.types";
 import { Patient } from "../../types/patient.types";
-import { get } from "../../lib/api";
+import { initAppointments } from "../../lib/fakeAppointmentApi";
+import { initPatients } from "../../lib/fakePatientApi";
 
 interface AppointmentDetailsPageProps {
   params: { id: string };
@@ -27,21 +28,20 @@ const AppointmentDetailsPage: React.FC<AppointmentDetailsPageProps> = ({ params 
       return;
     }
 
-    const fetchData = async () => {
-      try {
-        const appt = await get<Appointment>(`/appointments?id=${id}`);
-        setAppointment(appt || null);
+    const fetchData = () => {
+      // Buscar agendamento específico
+      const appointments = initAppointments();
+      const appt = appointments.find(a => a.id === id) || null;
+      setAppointment(appt);
 
-        if (appt?.patientId) {
-          const pat = await get<Patient>(`/patients?id=${appt.patientId}`);
-          setPatient(pat || null);
-        }
-      } catch (error) {
-        console.error("Erro ao carregar detalhes:", error);
-        alert("Falha ao carregar detalhes do agendamento.");
-      } finally {
-        setLoading(false);
+      // Buscar paciente correspondente
+      if (appt) {
+        const patients = initPatients();
+        const pat = patients.find(p => p.id === appt.patientId) || null;
+        setPatient(pat);
       }
+
+      setLoading(false);
     };
 
     fetchData();
@@ -61,16 +61,19 @@ const AppointmentDetailsPage: React.FC<AppointmentDetailsPageProps> = ({ params 
             {patient ? `${patient.firstName} ${patient.lastName}` : "Desconhecido"}
           </span>
         </div>
+
         <div className={styles.row}>
           <span className={styles.label}>Data:</span>
           <span className={styles.value}>{new Date(appointment.date).toLocaleString()}</span>
         </div>
+
         {appointment.notes && (
           <div className={styles.row}>
             <span className={styles.label}>Anotações:</span>
             <span className={styles.value}>{appointment.notes}</span>
           </div>
         )}
+
         <div className={styles.row}>
           <span className={styles.label}>Status:</span>
           <span className={styles.value}>{appointment.status}</span>

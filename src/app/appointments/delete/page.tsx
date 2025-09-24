@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Appointment } from "../../types/appointment.types";
-import { get, del } from "../../lib/api";
+import { initAppointments, saveAppointments } from "../../lib/fakeAppointmentApi";
 
 const AppointmentDeletePage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -23,28 +23,22 @@ const AppointmentDeletePage: React.FC = () => {
       return;
     }
 
-    const fetchAppointment = async () => {
-      try {
-        // <-- CORREÇÃO: URL com query string
-        const found = await get<Appointment>(`/appointments?id=${id}`);
-        setAppointment(found || null);
-      } catch (error) {
-        console.error("Erro ao carregar agendamento:", error);
-        alert("Falha ao carregar agendamento.");
-      } finally {
-        setLoading(false);
-      }
+    const fetchAppointment = () => {
+      const appointments = initAppointments();
+      const found = appointments.find((a) => a.id === id) || null;
+      setAppointment(found);
+      setLoading(false);
     };
 
     fetchAppointment();
   }, [id]);
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!appointment) return;
     setDeleting(true);
     try {
-      // <-- CORREÇÃO: DELETE com query string
-      await del(`/appointments?id=${appointment.id}`);
+      const updated = initAppointments().filter((a) => a.id !== appointment.id);
+      saveAppointments(updated);
       alert("Agendamento excluído com sucesso!");
       router.push("/appointments");
     } catch (error) {
@@ -62,7 +56,7 @@ const AppointmentDeletePage: React.FC = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>Excluir Agendamento</h1>
       <p>
-        Tem certeza que deseja excluir o agendamento de{" "}
+        Tem certeza que deseja excluir o agendamento do paciente{" "}
         <strong>{appointment.patientId}</strong> em{" "}
         <strong>{new Date(appointment.date).toLocaleString()}</strong>?
       </p>
@@ -74,7 +68,11 @@ const AppointmentDeletePage: React.FC = () => {
         >
           {deleting ? "Excluindo..." : "Confirmar"}
         </button>
-        <button className={styles.button} onClick={() => router.push("/appointments")}>
+        <button
+          className={styles.button}
+          onClick={() => router.push("/appointments")}
+          disabled={deleting}
+        >
           Cancelar
         </button>
       </div>

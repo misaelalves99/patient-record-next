@@ -6,13 +6,13 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
-import { get } from "../../lib/api";
+import { initPatients } from "../../lib/fakePatientApi";
 
 interface PatientDetailsPageProps {
   params: { id: string };
 }
 
-export const PatientDetailsPage: React.FC<PatientDetailsPageProps> = ({ params }) => {
+const PatientDetailsPage: React.FC<PatientDetailsPageProps> = ({ params }) => {
   const { id } = params;
   const router = useRouter();
 
@@ -20,18 +20,17 @@ export const PatientDetailsPage: React.FC<PatientDetailsPageProps> = ({ params }
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) {
+      setLoading(false);
+      return;
+    }
 
-    const fetchPatient = async () => {
-      try {
-        const data = await get<Patient[]>("/patients");
-        const found = data.find((p) => p.id.replace(/^p/, "") === id); 
-        setPatient(found || null);
-      } catch (error) {
-        console.error("Erro ao carregar paciente:", error);
-      } finally {
-        setLoading(false);
-      }
+    const fetchPatient = () => {
+      const patients = initPatients();
+      const pat = patients.find(p => p.id === id) || null;
+      if (!pat) alert("Paciente não encontrado.");
+      setPatient(pat);
+      setLoading(false);
     };
 
     fetchPatient();

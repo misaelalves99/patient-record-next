@@ -3,12 +3,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import styles from "./page.module.css";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PatientForm } from "../../components/patients/PatientForm";
 import { Patient } from "../../types/patient.types";
-import { get, put } from "../../lib/api";
+import { initPatients, savePatients } from "../../lib/fakePatientApi";
+import styles from "./page.module.css";
 
-const EditPatientPage: React.FC = () => {
+export const EditPatientPage: React.FC = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -17,74 +18,47 @@ const EditPatientPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [gender, setGender] = useState<"male" | "female" | "other">("male");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-
+  // 🔹 Carregar paciente existente da fake API
   useEffect(() => {
     if (!id) {
       setLoading(false);
       return;
     }
 
-    const fetchPatient = async () => {
-      try {
-        const found = await get<Patient>(`/patients?id=${id}`);
-        if (found) {
-          setPatient(found);
-          setFirstName(found.firstName);
-          setLastName(found.lastName);
-          setCpf(found.cpf);
-          setBirthDate(found.birthDate);
-          setGender(found.gender);
-          setPhone(found.phone || "");
-          setEmail(found.email);
-          setAddress(found.address);
-          setCity(found.city || "");
-          setState(found.state);
-        } else {
-          alert("Paciente não encontrado.");
-        }
-      } catch (error) {
-        console.error("Erro ao carregar paciente:", error);
-        alert("Falha ao carregar paciente.");
-      } finally {
-        setLoading(false);
-      }
+    const fetchPatient = () => {
+      const patients = initPatients();
+      const pat = patients.find((p) => p.id === id) || null;
+      if (!pat) alert("Paciente não encontrado.");
+      setPatient(pat);
+      setLoading(false);
     };
 
     fetchPatient();
   }, [id]);
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!patient) return;
+  // 🔹 Atualizar paciente na fake API
+  const handleUpdate = (
+    data: Omit<Patient, "id" | "createdAt" | "updatedAt">
+  ) => {
+    if (!patient || !id) return;
 
     setSaving(true);
+
     try {
       const updatedPatient: Patient = {
         ...patient,
-        firstName,
-        lastName,
-        cpf,
-        birthDate,
-        gender,
-        phone,
-        email,
-        address,
-        city,
-        state,
+        ...data,
         updatedAt: new Date().toISOString(),
       };
 
-      await put("/patients", updatedPatient);
+      // Atualizar paciente no localStorage
+      const patients = initPatients();
+      const index = patients.findIndex((p) => p.id === id);
+      if (index !== -1) {
+        patients[index] = updatedPatient;
+        savePatients(patients);
+      }
+
       alert("Paciente atualizado com sucesso!");
       router.push("/patients");
     } catch (error) {
@@ -95,137 +69,18 @@ const EditPatientPage: React.FC = () => {
     }
   };
 
-  if (loading) return <p className={styles.message}>Carregando paciente...</p>;
-  if (!patient) return <p className={styles.message}>Paciente não encontrado.</p>;
+  if (loading) return <p>Carregando paciente...</p>;
+  if (!patient) return <p>Paciente não encontrado.</p>;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Editar Paciente</h1>
-
-      <form onSubmit={handleSave} className={styles.form}>
-        <label className={styles.label}>
-          Nome
-          <input
-            className={styles.input}
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          Sobrenome
-          <input
-            className={styles.input}
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          CPF
-          <input
-            className={styles.input}
-            type="text"
-            value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          Data de Nascimento
-          <input
-            className={styles.input}
-            type="date"
-            value={birthDate}
-            onChange={(e) => setBirthDate(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          Sexo
-          <select
-            className={styles.input}
-            value={gender}
-            onChange={(e) => setGender(e.target.value as "male" | "female" | "other")}
-            required
-          >
-            <option value="male">Masculino</option>
-            <option value="female">Feminino</option>
-            <option value="other">Outro</option>
-          </select>
-        </label>
-
-        <label className={styles.label}>
-          Telefone
-          <input
-            className={styles.input}
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          Email
-          <input
-            className={styles.input}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          Endereço
-          <input
-            className={styles.input}
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          Cidade
-          <input
-            className={styles.input}
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          Estado (UF)
-          <input
-            className={styles.input}
-            type="text"
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            required
-          />
-        </label>
-
-        <button type="submit" className={styles.button} disabled={saving}>
-          {saving ? "Salvando..." : "Salvar"}
-        </button>
-        <button
-            className={styles.backButton}
-            onClick={() => router.push("/patients")}
-        >
-            Voltar
-        </button>
-      </form>
+      <PatientForm
+        patient={patient}
+        onSubmit={handleUpdate}
+        saving={saving}
+        loading={loading}
+      />
     </div>
   );
 };

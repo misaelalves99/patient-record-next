@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
-import { get, del } from "../../lib/api";
+import { initPatients, savePatients } from "../../lib/fakePatientApi";
 
 export const DeletePatientPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -17,31 +17,35 @@ export const DeletePatientPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
+  // Carregar paciente específico
   useEffect(() => {
-    if (!id) return;
-    const fetchPatient = async () => {
-      try {
-        const data = await get<Patient[]>("/patients");
-        const found = data.find((p) => p.id === id);
-        setPatient(found || null);
-      } catch (error) {
-        console.error("Erro ao carregar paciente:", error);
-      } finally {
-        setLoading(false);
-      }
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchPatient = () => {
+      const patients = initPatients();
+      const found = patients.find((p) => p.id === id) || null;
+      setPatient(found);
+      setLoading(false);
     };
+
     fetchPatient();
   }, [id]);
 
-  const handleDelete = async () => {
+  // Excluir paciente
+  const handleDelete = () => {
     if (!patient) return;
     setDeleting(true);
+
     try {
-      await del(`/patients/${patient.id}`);
+      const patients = initPatients().filter((p) => p.id !== patient.id);
+      savePatients(patients);
       alert("Paciente excluído com sucesso!");
       router.push("/patients");
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao excluir paciente:", error);
       alert("Erro ao excluir paciente.");
     } finally {
       setDeleting(false);
@@ -54,13 +58,24 @@ export const DeletePatientPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Excluir Paciente</h1>
-      <p>Tem certeza que deseja excluir {patient.firstName} {patient.lastName}?</p>
-      <button className={styles.deleteButton} onClick={handleDelete} disabled={deleting}>
-        {deleting ? "Excluindo..." : "Excluir"}
-      </button>
-      <button className={styles.button} onClick={() => router.push("/patients")}>
-        Cancelar
-      </button>
+      <p>Tem certeza que deseja excluir <strong>{patient.firstName} {patient.lastName}</strong>?</p>
+      
+      <div className={styles.actions}>
+        <button 
+          className={styles.deleteButton} 
+          onClick={handleDelete} 
+          disabled={deleting}
+        >
+          {deleting ? "Excluindo..." : "Excluir"}
+        </button>
+        <button 
+          className={styles.button} 
+          onClick={() => router.push("/patients")}
+          disabled={deleting}
+        >
+          Cancelar
+        </button>
+      </div>
     </div>
   );
 };

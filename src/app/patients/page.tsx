@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Patient } from "../types/patient.types";
-import { get } from "../lib/api";
+import { initPatients } from "../lib/fakePatientApi";
 import {
   AiOutlineEye,
   AiOutlineEdit,
@@ -19,25 +19,18 @@ export const PatientsPage: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Carrega pacientes do fake API
+  const fetchPatients = () => {
+    const data = initPatients();
+    setPatients(data);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const data = await get<Patient[]>("/patients");
-        setPatients(data);
-      } catch (error) {
-        console.error("Erro ao carregar pacientes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchPatients();
   }, []);
 
-  if (loading)
-    return <p className={styles.message}>Carregando pacientes...</p>;
-
-  // Função para normalizar ID (remove prefixo "p")
-  const normalizeId = (id: string) => id.replace(/^p/, "");
+  if (loading) return <p className={styles.message}>Carregando pacientes...</p>;
 
   return (
     <div className={styles.container}>
@@ -63,42 +56,37 @@ export const PatientsPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {patients.map((p) => {
-              const cleanId = normalizeId(p.id);
-              return (
-                <tr key={p.id}>
-                  <td>{cleanId}</td>
-                  <td>
-                    {p.firstName} {p.lastName}
-                  </td>
-                  <td>{p.phone}</td>
-                  <td className={styles.actions}>
-                    <AiOutlineEye
-                      className={`${styles.iconButton} ${styles.detail}`}
-                      title="Detalhes"
-                      onClick={() => router.push(`/patients/${cleanId}`)}
-                    />
-                    <AiOutlineEdit
-                      className={`${styles.iconButton} ${styles.edit}`}
-                      title="Editar"
-                      onClick={() => router.push(`/patients/edit?id=${cleanId}`)}
-                    />
-                    <AiOutlineDelete
-                      className={`${styles.iconButton} ${styles.delete}`}
-                      title="Excluir"
-                      onClick={() => router.push(`/patients/delete?id=${cleanId}`)}
-                    />
-                    <AiOutlineFileText
-                      className={`${styles.iconButton} ${styles.report}`}
-                      title="Relatório de Tratamento"
-                      onClick={() =>
-                        router.push(`/patients/report?id=${cleanId}`)
-                      }
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+            {patients.map((p) => (
+              <tr key={p.id}>
+                <td>{p.id}</td>
+                <td>
+                  {p.firstName} {p.lastName}
+                </td>
+                <td>{p.phone}</td>
+                <td className={styles.actions}>
+                  <AiOutlineEye
+                    className={`${styles.iconButton} ${styles.detail}`}
+                    title="Detalhes"
+                    onClick={() => router.push(`/patients/${p.id}`)}
+                  />
+                  <AiOutlineEdit
+                    className={`${styles.iconButton} ${styles.edit}`}
+                    title="Editar"
+                    onClick={() => router.push(`/patients/edit?id=${p.id}`)}
+                  />
+                  <AiOutlineDelete
+                    className={`${styles.iconButton} ${styles.delete}`}
+                    title="Excluir"
+                    onClick={() => router.push(`/patients/delete?id=${p.id}`)}
+                  />
+                  <AiOutlineFileText
+                    className={`${styles.iconButton} ${styles.report}`}
+                    title="Relatório"
+                    onClick={() => router.push(`/patients/report?id=${p.id}`)}
+                  />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}

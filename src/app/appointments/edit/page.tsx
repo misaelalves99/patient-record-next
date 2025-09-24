@@ -4,10 +4,17 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import styles from "./page.module.css";
+import { AppointmentForm } from "../../components/appointments/AppointmentForm";
 import { Appointment } from "../../types/appointment.types";
 import { Patient } from "../../types/patient.types";
-import { get, put } from "../../lib/api";
+import {
+  initAppointments,
+  saveAppointments,
+  loadAppointments,
+} from "../../lib/fakeAppointmentApi";
+import { initPatients } from "../../lib/fakePatientApi";
+import { initDoctors } from "../../lib/fakeDoctorApi";
+import styles from "./page.module.css";
 
 const AppointmentEditPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -16,43 +23,48 @@ const AppointmentEditPage: React.FC = () => {
 
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [doctors, setDoctors] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  // 🔹 Carrega dados da fake API
   useEffect(() => {
     if (!id) {
       setLoading(false);
       return;
     }
 
-    const fetchData = async () => {
-      try {
-        const appt = await get<Appointment>(`/appointments?id=${id}`);
-        setAppointment(appt);
+    const fetchData = () => {
+      const appointments = initAppointments();
+      const appt = appointments.find((a) => a.id === id) || null;
+      setAppointment(appt);
 
-        const pats = await get<Patient[]>("/patients");
-        setPatients(pats);
-      } catch (error) {
-        console.error("Erro ao carregar agendamento ou pacientes:", error);
-      } finally {
-        setLoading(false);
-      }
+      setPatients(initPatients());
+      setDoctors(initDoctors());
+      setLoading(false);
     };
 
     fetchData();
   }, [id]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // 🔹 Atualiza agendamento na fake API
+  const handleUpdate = (
+    data: Omit<Appointment, "id" | "createdAt" | "updatedAt">
+  ) => {
     if (!appointment || !id) return;
 
     setSaving(true);
+
     try {
-      const updated: Appointment = {
-        ...appointment,
-        updatedAt: new Date().toISOString(),
-      };
-      await put(`/appointments`, updated);
+      const appointments = loadAppointments();
+      const updatedList = appointments.map((a) =>
+        a.id === id
+          ? { ...a, ...data, updatedAt: new Date().toISOString() }
+          : a
+      );
+
+      saveAppointments(updatedList);
+      alert("Agendamento atualizado com sucesso!");
       router.push("/appointments");
     } catch (error) {
       console.error("Erro ao editar agendamento:", error);
@@ -63,73 +75,20 @@ const AppointmentEditPage: React.FC = () => {
   };
 
   if (loading) return <p className={styles.message}>Carregando...</p>;
-  if (!appointment) return <p className={styles.message}>Agendamento não encontrado.</p>;
+  if (!appointment)
+    return <p className={styles.message}>Agendamento não encontrado.</p>;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Editar Agendamento</h1>
-
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <label className={styles.label}>
-          Paciente
-          <select
-            value={appointment.patientId}
-            onChange={(e) => setAppointment({ ...appointment, patientId: e.target.value })}
-            required
-          >
-            {patients.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.firstName} {p.lastName}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className={styles.label}>
-          Data
-          <input
-            type="datetime-local"
-            value={appointment.date.slice(0, 16)}
-            onChange={(e) => setAppointment({ ...appointment, date: e.target.value })}
-            required
-          />
-        </label>
-
-        <label className={styles.label}>
-          Anotações
-          <textarea
-            value={appointment.notes || ""}
-            onChange={(e) => setAppointment({ ...appointment, notes: e.target.value })}
-          />
-        </label>
-
-        <label className={styles.label}>
-          Status
-          <select
-            value={appointment.status}
-            onChange={(e) =>
-              setAppointment({
-                ...appointment,
-                status: e.target.value as "scheduled" | "completed" | "canceled",
-              })
-            }
-          >
-            <option value="scheduled">Agendado</option>
-            <option value="completed">Concluído</option>
-            <option value="canceled">Cancelado</option>
-          </select>
-        </label>
-
-        <button type="submit" className={styles.button} disabled={saving}>
-          {saving ? "Salvando..." : "Salvar Alterações"}
-        </button>
-        <button
-            className={styles.backButton}
-            onClick={() => router.push("/appointments")}
-        >
-            Voltar
-        </button>
-      </form>
+      <AppointmentForm
+        appointment={appointment}
+        patients={patients}
+        doctors={doctors}
+        saving={saving}
+        onSubmit={handleUpdate}
+        onCancel={() => router.push("/appointments")}
+      />
     </div>
   );
 };

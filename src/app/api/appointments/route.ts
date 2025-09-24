@@ -1,13 +1,14 @@
 // src/app/api/appointments/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { Appointment } from "../../types/appointment.types";
 
-// Base de dados temporária
+// Base de dados temporária em memória
 let appointments: Appointment[] = [
   {
     id: "1",
     patientId: "1",
-    doctorId: "1",
+    doctorId: "d1",
     date: new Date().toISOString(),
     status: "scheduled",
     notes: "Primeira consulta",
@@ -17,7 +18,7 @@ let appointments: Appointment[] = [
   {
     id: "2",
     patientId: "2",
-    doctorId: "2",
+    doctorId: "d2",
     date: new Date().toISOString(),
     status: "completed",
     notes: "Consulta de retorno",

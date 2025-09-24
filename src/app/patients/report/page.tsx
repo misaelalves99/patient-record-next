@@ -3,9 +3,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Patient } from "../../types/patient.types";
-import { get } from "../../lib/api";
+import { loadPatients } from "../../lib/fakePatientApi";
 import styles from "./page.module.css";
 import {
   AiOutlineUser,
@@ -21,7 +21,7 @@ import {
   AiOutlinePlus,
 } from "react-icons/ai";
 
-// Componente para o card de informações do paciente
+// Card de informações do paciente
 const InfoCard: React.FC<{
   icon: React.ReactNode;
   label: string;
@@ -36,7 +36,7 @@ const InfoCard: React.FC<{
   </div>
 );
 
-// Componente para o card de área administrativa
+// Card da área administrativa
 const AdminCard: React.FC<{
   icon: React.ReactNode;
   number: number;
@@ -58,6 +58,7 @@ const AdminCard: React.FC<{
 
 const PatientReportPage: React.FC = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const id = searchParams.get("id");
 
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -71,19 +72,15 @@ const PatientReportPage: React.FC = () => {
       return;
     }
 
-    const fetchPatientData = async () => {
-      try {
-        const patientData = await get<Patient>(`/patients/${id}`);
-        setPatient(patientData);
-      } catch (err) {
-        console.error("Erro ao buscar dados do paciente:", err);
-        setError("Não foi possível carregar os dados do paciente.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    const patients = loadPatients();
+    const found = patients.find((p) => String(p.id) === String(id));
 
-    fetchPatientData();
+    if (!found) {
+      setError("Paciente não encontrado.");
+    } else {
+      setPatient(found);
+    }
+    setLoading(false);
   }, [id]);
 
   if (loading) {
@@ -98,7 +95,7 @@ const PatientReportPage: React.FC = () => {
     return <div className={styles.message}>Paciente não encontrado.</div>;
   }
 
-  // Dados de mock para simular a área administrativa
+  // Mock de dados administrativos
   const mockAdminData = {
     consultas: 31,
     exames: 2,
@@ -110,6 +107,7 @@ const PatientReportPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
+      {/* Cabeçalho */}
       <header className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.profilePic}>
@@ -124,20 +122,28 @@ const PatientReportPage: React.FC = () => {
                 <AiOutlinePhone /> {patient.phone}
               </span>
               <span className={styles.detailItem}>
-                <AiOutlineCalendar /> {new Date().getFullYear() - new Date(patient.birthDate).getFullYear()} anos
+                <AiOutlineCalendar />{" "}
+                {new Date().getFullYear() -
+                  new Date(patient.birthDate).getFullYear()}{" "}
+                anos
               </span>
             </div>
             <div className={styles.plan}>
               <AiOutlineBank /> Plano: UNIMED
             </div>
           </div>
-          <button className={styles.editButton}>
+          <button
+            className={styles.editButton}
+            onClick={() => router.push(`/patients/edit?id=${patient.id}`)}
+          >
             <AiOutlineEdit /> Editar
           </button>
         </div>
       </header>
 
+      {/* Conteúdo */}
       <div className={styles.contentGrid}>
+        {/* Próximos Agendamentos */}
         <section className={styles.appointmentsSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Próximos Agendamentos</h2>
@@ -149,20 +155,27 @@ const PatientReportPage: React.FC = () => {
             <div className={styles.appointmentItem}>
               <AiOutlineClockCircle className={styles.appointmentIcon} />
               <div className={styles.appointmentDetails}>
-                <span className={styles.appointmentType}>Consulta</span> com Dra. Marina Dias
-                <span className={styles.appointmentDate}>19/11/2025 às 15:00</span>
+                <span className={styles.appointmentType}>Consulta</span> com
+                Dra. Marina Dias
+                <span className={styles.appointmentDate}>
+                  19/11/2025 às 15:00
+                </span>
               </div>
             </div>
             <div className={styles.appointmentItem}>
               <AiOutlineSolution className={styles.appointmentIcon} />
               <div className={styles.appointmentDetails}>
-                <span className={styles.appointmentType}>Procedimento</span> com Dr. João Carlos
-                <span className={styles.appointmentDate}>19/11/2025 às 16:00</span>
+                <span className={styles.appointmentType}>Procedimento</span> com
+                Dr. João Carlos
+                <span className={styles.appointmentDate}>
+                  19/11/2025 às 16:00
+                </span>
               </div>
             </div>
           </div>
         </section>
 
+        {/* Observações */}
         <section className={styles.observationsSection}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Observações</h2>
@@ -171,8 +184,9 @@ const PatientReportPage: React.FC = () => {
             </button>
           </div>
           <p className={styles.observationText}>
-            Paciente mais sensível a dor. Agendar procedimentos com tempo extra.
+            Paciente mais sensível à dor. Agendar procedimentos com tempo extra.
           </p>
+
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Observações Privadas</h2>
             <button className={styles.editLink}>
@@ -180,10 +194,12 @@ const PatientReportPage: React.FC = () => {
             </button>
           </div>
           <p className={styles.observationText}>
-            Paciente diabético. Necessário monitoramento da glicemia antes de procedimentos.
+            Paciente diabético. Necessário monitoramento da glicemia antes de
+            procedimentos.
           </p>
         </section>
 
+        {/* Área Administrativa */}
         <section className={styles.adminAreaSection}>
           <h2 className={styles.sectionTitle}>Área Administrativa</h2>
           <div className={styles.adminCardsGrid}>

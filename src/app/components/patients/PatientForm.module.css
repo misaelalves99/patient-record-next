@@ -1,49 +1,22 @@
-/* src/app/patients/edit/page.module.css */
-
-.container {
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border-radius: 12px;
-  font-family: 'Inter', sans-serif;
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #1a1a1a;
-}
-
-.backButton {
-  display: inline-block;
-  margin-bottom: 1.5rem;
-  padding: 0.5rem 1rem;
-  font-weight: 600;
-  color: #ffffff;
-  background-color: #4f46e5;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.backButton:hover {
-  background-color: #3730a3;
-}
-
+/* src/components/patients/PatientForm.module.css */
 .form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  font-family: 'Inter', sans-serif;
 }
 
 .label {
   display: flex;
   flex-direction: column;
   font-weight: 600;
-  color: #555555;
+  color: #555;
   font-size: 0.95rem;
 }
 
@@ -54,7 +27,7 @@
   margin-top: 0.25rem;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.2s ease-in-out;
+  transition: border-color 0.2s;
 }
 
 .input:focus {
@@ -65,7 +38,7 @@
   padding: 0.75rem;
   font-size: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #fff;
   background-color: #4f46e5;
   border: none;
   border-radius: 8px;
@@ -81,6 +54,6 @@
 .message {
   text-align: center;
   font-size: 1rem;
-  color: #777777;
-  margin-top: 2rem;
+  color: #777;
+  margin-top: 1rem;
 }

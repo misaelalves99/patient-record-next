@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import { Appointment } from "../types/appointment.types";
 import { Patient } from "../types/patient.types";
-import { get } from "../lib/api";
+import { initAppointments } from "../lib/fakeAppointmentApi";
+import { initPatients } from "../lib/fakePatientApi";
 import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 
 const AppointmentsPage: React.FC = () => {
@@ -16,25 +17,23 @@ const AppointmentsPage: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchAppointments = () => {
+    setAppointments(initAppointments());
+    setPatients(initPatients());
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const appts = await get<Appointment[]>("/appointments");
-        const pats = await get<Patient[]>("/patients");
-        setAppointments(appts);
-        setPatients(pats);
-      } catch (error) {
-        console.error("Erro ao carregar dados:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    fetchAppointments();
   }, []);
 
   const getPatientName = (id: string) => {
     const patient = patients.find((p) => p.id === id);
     return patient ? `${patient.firstName} ${patient.lastName}` : "Desconhecido";
+  };
+
+  const handleDelete = (id: string) => {
+    router.push(`/appointments/delete?id=${id}`);
   };
 
   if (loading) return <p className={styles.message}>Carregando agendamentos...</p>;
@@ -82,7 +81,7 @@ const AppointmentsPage: React.FC = () => {
                   <AiOutlineDelete
                     className={`${styles.iconButton} ${styles.delete}`}
                     title="Excluir"
-                    onClick={() => router.push(`/appointments/delete?id=${appt.id}`)}
+                    onClick={() => handleDelete(appt.id)}
                   />
                 </td>
               </tr>

@@ -11,14 +11,17 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-export const AppLayout: React.FC<LayoutProps> = ({ children }) => {
+export default function RootLayout({ children }: LayoutProps) {
   return (
-    <div className={styles.container}>
-      <Navbar />
-      <main className={styles.main}>{children}</main>
-      <Footer />
-    </div>
+    <html lang="pt-BR">
+      <head>
+        <title>Patient Record</title>
+      </head>
+      <body className={styles.container}>
+        <Navbar />
+        <main className={styles.main}>{children}</main>
+        <Footer />
+      </body>
+    </html>
   );
-};
-
-export default AppLayout;
+}

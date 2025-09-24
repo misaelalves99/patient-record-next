@@ -2,13 +2,13 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 import styles from "./page.module.css";
 import { Appointment } from "../../types/appointment.types";
 import { initAppointments, saveAppointments } from "../../lib/fakeAppointmentApi";
 
-export default function AppointmentDeletePage() {
+function DeleteAppointmentContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -77,5 +77,13 @@ export default function AppointmentDeletePage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function AppointmentDeletePage() {
+  return (
+    <Suspense fallback={<p>Carregando...</p>}>
+      <DeleteAppointmentContent />
+    </Suspense>
   );
 }

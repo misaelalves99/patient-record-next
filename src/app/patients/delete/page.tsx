@@ -2,13 +2,13 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
 import { initPatients, savePatients } from "../../lib/fakePatientApi";
 
-export default function DeletePatientPage() {
+function DeletePatientContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -17,7 +17,6 @@ export default function DeletePatientPage() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
 
-  // Carregar paciente específico
   useEffect(() => {
     if (!id) {
       setLoading(false);
@@ -34,7 +33,6 @@ export default function DeletePatientPage() {
     fetchPatient();
   }, [id]);
 
-  // Excluir paciente
   const handleDelete = () => {
     if (!patient) return;
     setDeleting(true);
@@ -83,5 +81,13 @@ export default function DeletePatientPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function DeletePatientPage() {
+  return (
+    <Suspense fallback={<p>Carregando...</p>}>
+      <DeletePatientContent />
+    </Suspense>
   );
 }

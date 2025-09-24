@@ -10,37 +10,32 @@ import { initPatients, savePatients } from "../../lib/fakePatientApi";
 import styles from "./page.module.css";
 
 export default function EditPatientPage() {
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // 🔹 Carregar paciente existente da fake API
   useEffect(() => {
+    // Garantir que seja executado somente no cliente
+    const id = searchParams.get("id");
     if (!id) {
       setLoading(false);
       return;
     }
 
-    const fetchPatient = () => {
-      const patients = initPatients();
-      const pat = patients.find((p) => p.id === id) || null;
-      if (!pat) alert("Paciente não encontrado.");
-      setPatient(pat);
-      setLoading(false);
-    };
+    const patients = initPatients();
+    const pat = patients.find((p) => p.id === id) || null;
+    if (!pat) alert("Paciente não encontrado.");
+    setPatient(pat);
+    setLoading(false);
+  }, [searchParams]);
 
-    fetchPatient();
-  }, [id]);
-
-  // 🔹 Atualizar paciente na fake API
   const handleUpdate = (
     data: Omit<Patient, "id" | "createdAt" | "updatedAt">
   ) => {
-    if (!patient || !id) return;
+    if (!patient) return;
 
     setSaving(true);
 
@@ -51,9 +46,8 @@ export default function EditPatientPage() {
         updatedAt: new Date().toISOString(),
       };
 
-      // Atualizar paciente no localStorage
       const patients = initPatients();
-      const index = patients.findIndex((p) => p.id === id);
+      const index = patients.findIndex((p) => p.id === patient.id);
       if (index !== -1) {
         patients[index] = updatedPatient;
         savePatients(patients);

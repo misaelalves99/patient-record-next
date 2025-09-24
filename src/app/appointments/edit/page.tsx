@@ -2,8 +2,8 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 import { AppointmentForm } from "../../components/appointments/AppointmentForm";
 import { Appointment } from "../../types/appointment.types";
 import { Patient } from "../../types/patient.types";
@@ -16,7 +16,7 @@ import { initPatients } from "../../lib/fakePatientApi";
 import { initDoctors } from "../../lib/fakeDoctorApi";
 import styles from "./page.module.css";
 
-export default function AppointmentEditPage() {
+function AppointmentEditContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -27,7 +27,6 @@ export default function AppointmentEditPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // 🔹 Carrega dados da fake API
   useEffect(() => {
     if (!id) {
       setLoading(false);
@@ -47,7 +46,6 @@ export default function AppointmentEditPage() {
     fetchData();
   }, [id]);
 
-  // 🔹 Atualiza agendamento na fake API
   const handleUpdate = (
     data: Omit<Appointment, "id" | "createdAt" | "updatedAt">
   ) => {
@@ -90,5 +88,13 @@ export default function AppointmentEditPage() {
         onCancel={() => router.push("/appointments")}
       />
     </div>
+  );
+}
+
+export default function AppointmentEditPage() {
+  return (
+    <Suspense fallback={<p>Carregando...</p>}>
+      <AppointmentEditContent />
+    </Suspense>
   );
 }

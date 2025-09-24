@@ -15,13 +15,14 @@ import styles from "./page.module.css";
 
 export default function PatientReportPage() {
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
 
   const [patient, setPatient] = useState<Patient | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const id = searchParams.get("id"); // 🔹 mover para dentro do useEffect
+
     if (!id) {
       setError("ID do paciente não fornecido.");
       setLoading(false);
@@ -37,7 +38,7 @@ export default function PatientReportPage() {
       setPatient(found);
     }
     setLoading(false);
-  }, [id]);
+  }, [searchParams]);
 
   if (loading) return <div className={styles.message}>Carregando relatório...</div>;
   if (error || !patient) return <div className={styles.message}>{error || "Paciente não encontrado."}</div>;

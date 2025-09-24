@@ -1,6 +1,7 @@
 // src/app/page.tsx
 
 import React from "react";
+import Link from "next/link";
 import styles from "./page.module.css";
 
 export const HomePage: React.FC = () => {
@@ -14,12 +15,12 @@ export const HomePage: React.FC = () => {
         segura em um único lugar.
       </p>
       <div className={styles.ctaSection}>
-        <a href="/patients" className={styles.ctaButton}>
+        <Link href="/patients" className={styles.ctaButton}>
           Ver Pacientes
-        </a>
-        <a href="/appointments" className={styles.ctaButtonSecondary}>
+        </Link>
+        <Link href="/appointments" className={styles.ctaButtonSecondary}>
           Agendar Consulta
-        </a>
+        </Link>
       </div>
     </div>
   );

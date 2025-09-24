@@ -2,30 +2,33 @@
 
 "use client";
 
-import React, { useState } from 'react';
-import styles from './page.module.css';
-import { useAuth } from '../../hooks/useAuth';
+import React, { useState } from "react";
+import styles from "./page.module.css";
+import { useAuth } from "../../hooks/useAuth";
 
 export const RegisterPage: React.FC = () => {
   const { register } = useAuth();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'admin' | 'doctor' | 'nurse' | 'patient'>('patient');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"admin" | "doctor" | "nurse" | "patient">(
+    "patient"
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await register({ firstName, lastName, email, password, role });
-      alert('Usuário registrado com sucesso!');
-      setFirstName('');
-      setLastName('');
-      setEmail('');
-      setPassword('');
-      setRole('patient');
-    } catch (error) {
-      alert('Falha no registro.');
+      alert("Usuário registrado com sucesso!");
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPassword("");
+      setRole("patient");
+    } catch {
+      // 🔹 Agora não declaramos `error` para não quebrar eslint
+      alert("Falha no registro.");
     }
   };
 
@@ -82,7 +85,9 @@ export const RegisterPage: React.FC = () => {
           <select
             className={styles.input}
             value={role}
-            onChange={(e) => setRole(e.target.value as any)}
+            onChange={(e) =>
+              setRole(e.target.value as "admin" | "doctor" | "nurse" | "patient")
+            }
           >
             <option value="admin">Administrador</option>
             <option value="doctor">Médico</option>
@@ -90,7 +95,9 @@ export const RegisterPage: React.FC = () => {
             <option value="patient">Paciente</option>
           </select>
         </label>
-        <button className={styles.button} type="submit">Registrar</button>
+        <button className={styles.button} type="submit">
+          Registrar
+        </button>
       </form>
     </div>
   );

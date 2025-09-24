@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { User } from '../../types/auth.types';
 
-let users: User[] = [
+const users: User[] = [
   {
     id: 'u1',
     firstName: 'Admin',
@@ -28,7 +28,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const newUser = await req.json();
+  const newUser: User = await req.json();
   newUser.id = `u${users.length + 1}`;
   newUser.createdAt = new Date().toISOString();
   newUser.updatedAt = new Date().toISOString();

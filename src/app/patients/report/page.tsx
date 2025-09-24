@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Patient } from "../../types/patient.types";
 import { loadPatients } from "../../lib/fakePatientApi";
@@ -13,7 +13,7 @@ import { ObservationsSection } from "../../components/patients/ObservationsSecti
 import { AdminArea } from "../../components/patients/AdminArea";
 import styles from "./page.module.css";
 
-export default function PatientReportPage() {
+function PatientReportContent() {
   const searchParams = useSearchParams();
 
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -21,7 +21,7 @@ export default function PatientReportPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const id = searchParams.get("id"); // 🔹 mover para dentro do useEffect
+    const id = searchParams.get("id"); // 🔹 acessar dentro do useEffect
 
     if (!id) {
       setError("ID do paciente não fornecido.");
@@ -54,5 +54,13 @@ export default function PatientReportPage() {
         <AdminArea data={mockAdminData} />
       </div>
     </div>
+  );
+}
+
+export default function PatientReportPage() {
+  return (
+    <Suspense fallback={<p>Carregando...</p>}>
+      <PatientReportContent />
+    </Suspense>
   );
 }

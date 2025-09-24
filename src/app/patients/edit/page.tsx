@@ -2,14 +2,14 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PatientForm } from "../../components/patients/PatientForm";
 import { Patient } from "../../types/patient.types";
 import { initPatients, savePatients } from "../../lib/fakePatientApi";
 import styles from "./page.module.css";
 
-export default function EditPatientPage() {
+function EditPatientContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -18,7 +18,6 @@ export default function EditPatientPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    // 🔹 Executa somente no cliente
     const id = searchParams.get("id");
     if (!id) {
       setLoading(false);
@@ -28,9 +27,7 @@ export default function EditPatientPage() {
     const patients = initPatients();
     const pat = patients.find((p) => p.id === id) || null;
 
-    if (!pat) {
-      alert("Paciente não encontrado.");
-    }
+    if (!pat) alert("Paciente não encontrado.");
 
     setPatient(pat);
     setLoading(false);
@@ -80,5 +77,13 @@ export default function EditPatientPage() {
         loading={loading}
       />
     </div>
+  );
+}
+
+export default function EditPatientPage() {
+  return (
+    <Suspense fallback={<p>Carregando...</p>}>
+      <EditPatientContent />
+    </Suspense>
   );
 }

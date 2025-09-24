@@ -14,7 +14,7 @@ import {
   AiOutlineFileText,
 } from "react-icons/ai";
 
-export const PatientsPage: React.FC = () => {
+export default function PatientsPage() {
   const router = useRouter();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,6 +92,4 @@ export const PatientsPage: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default PatientsPage;
+}

@@ -9,7 +9,7 @@ import { Patient } from "../../types/patient.types";
 import { initPatients, savePatients } from "../../lib/fakePatientApi";
 import styles from "./page.module.css";
 
-export const CreatePatientPage: React.FC = () => {
+export default function CreatePatientPage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
 
@@ -49,6 +49,4 @@ export const CreatePatientPage: React.FC = () => {
       <PatientForm onSubmit={handleCreate} saving={saving} />
     </div>
   );
-};
-
-export default CreatePatientPage;
+}

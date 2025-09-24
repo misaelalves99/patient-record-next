@@ -11,7 +11,7 @@ import { initAppointments } from "../lib/fakeAppointmentApi";
 import { initPatients } from "../lib/fakePatientApi";
 import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 
-const AppointmentsPage: React.FC = () => {
+export default function AppointmentsPage() {
   const router = useRouter();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -91,6 +91,4 @@ const AppointmentsPage: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default AppointmentsPage;
+}

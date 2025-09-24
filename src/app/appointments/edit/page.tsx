@@ -16,7 +16,7 @@ import { initPatients } from "../../lib/fakePatientApi";
 import { initDoctors } from "../../lib/fakeDoctorApi";
 import styles from "./page.module.css";
 
-const AppointmentEditPage: React.FC = () => {
+export default function AppointmentEditPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -91,6 +91,4 @@ const AppointmentEditPage: React.FC = () => {
       />
     </div>
   );
-};
-
-export default AppointmentEditPage;
+}

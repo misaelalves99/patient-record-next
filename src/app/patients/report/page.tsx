@@ -13,7 +13,7 @@ import { ObservationsSection } from "../../components/patients/ObservationsSecti
 import { AdminArea } from "../../components/patients/AdminArea";
 import styles from "./page.module.css";
 
-const PatientReportPage: React.FC = () => {
+export default function PatientReportPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
@@ -54,6 +54,4 @@ const PatientReportPage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default PatientReportPage;
+}

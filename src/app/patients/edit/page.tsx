@@ -9,7 +9,7 @@ import { Patient } from "../../types/patient.types";
 import { initPatients, savePatients } from "../../lib/fakePatientApi";
 import styles from "./page.module.css";
 
-export const EditPatientPage: React.FC = () => {
+export default function EditPatientPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -83,6 +83,4 @@ export const EditPatientPage: React.FC = () => {
       />
     </div>
   );
-};
-
-export default EditPatientPage;
+}

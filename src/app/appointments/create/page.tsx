@@ -12,7 +12,7 @@ import { initDoctors } from "../../lib/fakeDoctorApi";
 import { addAppointment } from "../../lib/fakeAppointmentApi";
 import styles from "./page.module.css";
 
-const AppointmentCreatePage: React.FC = () => {
+export default function AppointmentCreatePage() {
   const router = useRouter();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [doctors, setDoctors] = useState<{ id: string; name: string }[]>([]);
@@ -45,6 +45,4 @@ const AppointmentCreatePage: React.FC = () => {
       />
     </div>
   );
-};
-
-export default AppointmentCreatePage;
+}

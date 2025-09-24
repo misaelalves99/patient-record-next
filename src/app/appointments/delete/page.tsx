@@ -8,7 +8,7 @@ import styles from "./page.module.css";
 import { Appointment } from "../../types/appointment.types";
 import { initAppointments, saveAppointments } from "../../lib/fakeAppointmentApi";
 
-const AppointmentDeletePage: React.FC = () => {
+export default function AppointmentDeletePage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -78,6 +78,4 @@ const AppointmentDeletePage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default AppointmentDeletePage;
+}

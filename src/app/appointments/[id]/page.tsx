@@ -1,54 +1,26 @@
 // src/app/appointments/[id]/page.tsx
 
-"use client";
-
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import styles from "./page.module.css";
-import { Appointment } from "../../types/appointment.types";
-import { Patient } from "../../types/patient.types";
 import { initAppointments } from "../../lib/fakeAppointmentApi";
 import { initPatients } from "../../lib/fakePatientApi";
+import styles from "./page.module.css";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 
 interface PageProps {
   params: { id: string };
 }
 
-const AppointmentDetailsPage = ({ params }: PageProps) => {
+export default function AppointmentDetailsPage({ params }: PageProps) {
   const { id } = params;
-  const router = useRouter();
 
-  const [appointment, setAppointment] = useState<Appointment | null>(null);
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Buscar agendamento específico
+  const appointments = initAppointments();
+  const appointment = appointments.find(a => a.id === id);
+  if (!appointment) notFound();
 
-  useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
-
-    const fetchData = () => {
-      // Buscar agendamento específico
-      const appointments = initAppointments();
-      const appt = appointments.find(a => a.id === id) || null;
-      setAppointment(appt);
-
-      // Buscar paciente correspondente
-      if (appt) {
-        const patients = initPatients();
-        const pat = patients.find(p => p.id === appt.patientId) || null;
-        setPatient(pat);
-      }
-
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [id]);
-
-  if (loading) return <p className={styles.message}>Carregando detalhes...</p>;
-  if (!appointment) return <p className={styles.message}>Agendamento não encontrado.</p>;
+  // Buscar paciente correspondente
+  const patients = initPatients();
+  const patient = patients.find(p => p.id === appointment.patientId) || null;
 
   return (
     <div className={styles.container}>
@@ -78,13 +50,10 @@ const AppointmentDetailsPage = ({ params }: PageProps) => {
           <span className={styles.label}>Status:</span>
           <span className={styles.value}>{appointment.status}</span>
         </div>
+        <Link href="/appointments" className={styles.backButton}>
+          Voltar
+        </Link>
       </div>
-
-      <button className={styles.backButton} onClick={() => router.push("/appointments")}>
-        Voltar
-      </button>
     </div>
   );
-};
-
-export default AppointmentDetailsPage;
+}

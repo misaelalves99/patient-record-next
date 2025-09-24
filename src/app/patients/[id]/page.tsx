@@ -1,43 +1,20 @@
 // src/app/patients/[id]/page.tsx
 
-"use client";
-
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import styles from "./page.module.css";
-import { Patient } from "../../types/patient.types";
 import { initPatients } from "../../lib/fakePatientApi";
+import styles from "./page.module.css";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 
 interface PageProps {
   params: { id: string };
 }
 
-const PatientDetailsPage = ({ params }: PageProps) => {
+export default function PatientDetailsPage({ params }: PageProps) {
   const { id } = params;
-  const router = useRouter();
 
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!id) {
-      setLoading(false);
-      return;
-    }
-
-    const fetchPatient = () => {
-      const patients = initPatients();
-      const pat = patients.find(p => p.id === id) || null;
-      if (!pat) alert("Paciente não encontrado.");
-      setPatient(pat);
-      setLoading(false);
-    };
-
-    fetchPatient();
-  }, [id]);
-
-  if (loading) return <p className={styles.message}>Carregando paciente...</p>;
-  if (!patient) return <p className={styles.message}>Paciente não encontrado.</p>;
+  const patients = initPatients();
+  const patient = patients.find(p => p.id === id);
+  if (!patient) notFound();
 
   return (
     <div className={styles.container}>
@@ -104,13 +81,12 @@ const PatientDetailsPage = ({ params }: PageProps) => {
             <span className={styles.value}>{new Date(patient.updatedAt).toLocaleString()}</span>
           </div>
         )}
-      </div>
 
-      <button className={styles.backButton} onClick={() => router.back()}>
-        Voltar
-      </button>
+        {/* Botão voltar */}
+        <Link href="/patients" className={styles.backButton}>
+          Voltar
+        </Link>
+      </div>
     </div>
   );
-};
-
-export default PatientDetailsPage;
+}

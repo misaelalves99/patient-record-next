@@ -6,7 +6,7 @@ import React from 'react';
 import styles from './page.module.css';
 import { useAuth } from '../../hooks/useAuth';
 
-export const ProfilePage: React.FC = () => {
+export default function ProfilePage() {
   const { user, logout } = useAuth();
 
   if (!user) return <p>Please log in to see your profile.</p>;
@@ -18,6 +18,4 @@ export const ProfilePage: React.FC = () => {
       <button className={styles.button} onClick={logout}>Logout</button>
     </div>
   );
-};
-
-export default ProfilePage;
+}

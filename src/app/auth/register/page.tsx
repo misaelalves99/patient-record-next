@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import styles from "./page.module.css";
 import { useAuth } from "../../hooks/useAuth";
 
-export const RegisterPage: React.FC = () => {
+export default function RegisterPage() {
   const { register } = useAuth();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -27,7 +27,6 @@ export const RegisterPage: React.FC = () => {
       setPassword("");
       setRole("patient");
     } catch {
-      // 🔹 Agora não declaramos `error` para não quebrar eslint
       alert("Falha no registro.");
     }
   };
@@ -101,6 +100,4 @@ export const RegisterPage: React.FC = () => {
       </form>
     </div>
   );
-};
-
-export default RegisterPage;
+}

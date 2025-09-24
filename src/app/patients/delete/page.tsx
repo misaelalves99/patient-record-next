@@ -8,7 +8,7 @@ import styles from "./page.module.css";
 import { Patient } from "../../types/patient.types";
 import { initPatients, savePatients } from "../../lib/fakePatientApi";
 
-export const DeletePatientPage: React.FC = () => {
+export default function DeletePatientPage() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const router = useRouter();
@@ -58,18 +58,24 @@ export const DeletePatientPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Excluir Paciente</h1>
-      <p>Tem certeza que deseja excluir <strong>{patient.firstName} {patient.lastName}</strong>?</p>
-      
+      <p>
+        Tem certeza que deseja excluir{" "}
+        <strong>
+          {patient.firstName} {patient.lastName}
+        </strong>
+        ?
+      </p>
+
       <div className={styles.actions}>
-        <button 
-          className={styles.deleteButton} 
-          onClick={handleDelete} 
+        <button
+          className={styles.deleteButton}
+          onClick={handleDelete}
           disabled={deleting}
         >
           {deleting ? "Excluindo..." : "Excluir"}
         </button>
-        <button 
-          className={styles.button} 
+        <button
+          className={styles.button}
           onClick={() => router.push("/patients")}
           disabled={deleting}
         >
@@ -78,6 +84,4 @@ export const DeletePatientPage: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default DeletePatientPage;
+}
